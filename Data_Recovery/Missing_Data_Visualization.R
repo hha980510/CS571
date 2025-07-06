@@ -1,3 +1,4 @@
+library(quantmod)
 library(naniar)
 library(VIM)
 library(ggplot2)
