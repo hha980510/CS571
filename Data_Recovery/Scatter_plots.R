@@ -2,18 +2,18 @@ library(quantmod)
 library(TTR)
 library(ggplot2)
 
-getSymbols("NVDA", src = "yahoo")
-nvda <- na.omit(NVDA)
+# Load full cleaned and enriched dataset
+source("data_pipeline.R")
 
 df <- data.frame(
-  Date = index(nvda),
-  Close = as.numeric(Cl(nvda)),                
-  Volume = as.numeric(Vo(nvda)),            
-  RSI = as.numeric(RSI(Cl(nvda), n = 14)),
-  MACD = as.numeric(MACD(Cl(nvda))$macd),
-  Volatility = as.numeric(runSD(Cl(nvda), 20)),
-  Return = as.numeric(dailyReturn(Cl(nvda), type = "log")),
-  Lag_1 = as.numeric(lag(Cl(nvda), k = 1))     
+  Date = index(nvda_data),
+  Close = as.numeric(Cl(nvda_data)),                
+  Volume = as.numeric(Vo(nvda_data)),            
+  RSI = as.numeric(RSI(Cl(nvda_data), n = 14)),
+  MACD = as.numeric(MACD(Cl(nvda_data))$macd),
+  Volatility = as.numeric(runSD(Cl(nvda_data), 20)),
+  Return = as.numeric(dailyReturn(Cl(nvda_data), type = "log")),
+  Lag_1 = as.numeric(lag(Cl(nvda_data), k = 1))     
 )
 df <- na.omit(df)
 

@@ -3,18 +3,18 @@ library(TTR)
 library(ggplot2)
 library(dplyr)
 
-getSymbols("NVDA", src = "yahoo")
-nvda <- na.omit(NVDA)
+# Load full cleaned and enriched dataset
+source("data_pipeline.R")
 
 df <- data.frame(
-  Date = index(nvda),
-  Close = Cl(nvda),
-  Volume = Vo(nvda),
-  SMA_10 = SMA(Cl(nvda), 10),
-  RSI_14 = RSI(Cl(nvda), 14),
-  MACD = MACD(Cl(nvda))$macd,
-  Signal = MACD(Cl(nvda))$signal,
-  Volatility = runSD(Cl(nvda), n = 20)
+  Date = index(nvda_data),
+  Close = Cl(nvda_data),
+  Volume = Vo(nvda_data),
+  SMA_10 = SMA(Cl(nvda_data), 10),
+  RSI_14 = RSI(Cl(nvda_data), 14),
+  MACD = MACD(Cl(nvda_data))$macd,
+  Signal = MACD(Cl(nvda_data))$signal,
+  Volatility = runSD(Cl(nvda_data), n = 20)
 )
 
 df <- na.omit(df)

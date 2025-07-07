@@ -1,14 +1,17 @@
 # 📦 필요한 패키지
 library(quantmod)
 library(ggplot2)
+if (!require(forecast)) install.packages("forecast")
 library(forecast)
 
-getSymbols("NVDA", src = "yahoo")
-nvda_close <- Cl(NVDA)
-nvda_ret <- dailyReturn(nvda_close, type = "log")
+# ✅ Load cleaned and engineered data
+source("data_pipeline.R")
+
+# ✅ Extract and clean log returns
+nvda_ret <- na.omit(nvda_data$log_return)
 
 # ACF,B
-ggAcf(as.numeric(nvda_ret)) +
+acf_plot <- ggAcf(as.numeric(nvda_ret)) +
   ggtitle("ACF of NVIDIA Log Returns") +
   theme_minimal(base_size = 16) +
   theme(
@@ -21,7 +24,7 @@ ggAcf(as.numeric(nvda_ret)) +
 
 
 # PACF,R
-ggPacf(as.numeric(nvda_ret)) +
+pacf_plot <- ggPacf(as.numeric(nvda_ret)) +
   ggtitle("PACF of NVIDIA Log Returns") +
   theme_minimal(base_size = 16) +
   theme(
@@ -32,4 +35,5 @@ ggPacf(as.numeric(nvda_ret)) +
   scale_y_continuous(limits = c(-0.1, 0.1)) +  # 좁은 범위로 확대
   geom_hline(yintercept = 0, color = "firebrick", linetype = "dashed", linewidth = 0.8)
 
-
+print(acf_plot)
+print(pacf_plot)

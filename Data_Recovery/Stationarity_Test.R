@@ -3,11 +3,8 @@ library(tseries)
 library(urca)
 library(ggplot2)
 
-getSymbols("NVDA", src = "yahoo")          
-nvda <- na.omit(NVDA)                      
-
-log_return <- dailyReturn(Cl(nvda), type = "log")  
-log_return <- na.omit(log_return)                  
+# Load full cleaned and enriched dataset
+source("data_pipeline.R")               
 
 plot(log_return,
      main = "Log Returns of NVDA",

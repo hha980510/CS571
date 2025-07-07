@@ -1,36 +1,34 @@
 library(quantmod)
 library(TTR)
-library(ggplot2)
+if (!require("ggcorrplot")) install.packages("ggcorrplot", dependencies = TRUE)
 library(ggcorrplot)
+70
+library(ggplot2)
 
-# 1. Load stock data
-getSymbols("NVDA", src = "yahoo")
-nvda <- na.omit(NVDA)  # Remove NAs
+# 🚀 Load Full Data Pipeline
+source("data_pipeline.R")
 
-# 2. Feature engineering
-df <- data.frame(
-  Close = Cl(nvda),
-  Volume = Vo(nvda),
-  SMA_5 = SMA(Cl(nvda), n = 5),
-  SMA_10 = SMA(Cl(nvda), n = 10),
-  RSI_14 = RSI(Cl(nvda), n = 14),
-  MACD = MACD(Cl(nvda))$macd,
-  Signal = MACD(Cl(nvda))$signal,
-  Volatility = runSD(Cl(nvda), n = 20),
-  Lag_1 = lag(Cl(nvda), k = 1)
-)
+# ✅ Ensure nvda_data exists
+if (!exists("nvda_data")) stop("❌ 'nvda_data' is missing. Please run data_pipeline.R first.")
 
-df <- na.omit(df)  # 필수: NA 제거
+# 🧹 Select Features for Correlation Analysis
+df <- na.omit(nvda_data[, c(
+  "scaled_close", "RSI14", "MACD", "Signal",
+  "volatility_20", "lag_close_1", "lag_return_1", "log_return", "scaled_rsi"
+)])
 
-# Correlation matrix
+# 📊 Compute Correlation Matrix
 corr_matrix <- cor(df)
 
-# Heatmap 시각화 (ggplot 기반)
-ggcorrplot(corr_matrix,
-           method = "square", 
-           type = "lower", 
-           lab = TRUE, 
-           lab_size = 3, 
+# 🔥 Plot Correlation Heatmap
+heatmap_plot <- ggcorrplot(corr_matrix,
+           method = "square",
+           type = "lower",
+           lab = TRUE,
+           lab_size = 3,
            colors = c("darkblue", "white", "darkred"),
-           title = "Correlation Heatmap of NVDA Features",
+           title = "Correlation Heatmap of Engineered NVDA Features",
            ggtheme = theme_minimal())
+ggsave("correlation_heatmap_nvda.png", plot = heatmap_plot, width = 8, height = 6)
+
+print(heatmap_plot)
