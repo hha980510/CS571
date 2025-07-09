@@ -3,3 +3,10 @@ title: "Selection of tools"
 output: html_document
 ---
 
+
+The tools for making the presentation has been gotten whic includes.
+
+1.  The Powerpoint
+2.  Meta AI
+3.  Kling AI
+4.  Wondershare Filmora
