@@ -39,6 +39,25 @@ nvda_data$scaled_rsi   <- scale(nvda_data$RSI14)
 nvda_data$z_return <- scale(nvda_data$log_return)
 nvda_data$outlier  <- abs(nvda_data$z_return) > 3
 
+# === Merge Macroeconomic Indicators ===
+
+# Ensure macro data is available
+macro_xts <- merge(CPIAUCNS, FEDFUNDS, DGS10, UNRATE, GDP, DTWEXM)
+
+# Align frequency: convert macro to daily using last observation carried forward
+macro_daily <- na.locf(merge(index(nvda_data), macro_xts), fromLast = FALSE)
+
+# Merge with nvda_data by date
+nvda_data <- merge(nvda_data, macro_daily, join = "left")
+
+# Rename macro columns for clarity
+colnames(nvda_data)[(ncol(nvda_data)-5):ncol(nvda_data)] <- c(
+  "cpi", "fed_funds", "treasury_10y", "unemployment", "gdp", "usd_index"
+)
+
+# ✅ Confirm macro variables added
+print("✅ Macroeconomic features added to nvda_data.")
+
 # ✅ Confirmation
 print("✅ Feature engineering complete.")
 print(tail(nvda_data[, c("SMA20", "RSI14", "MACD", "Signal", "volatility_20", "lag_close_1", "scaled_rsi")]))
