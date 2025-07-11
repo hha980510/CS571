@@ -2,7 +2,7 @@ library(quantmod)
 library(TTR)
 
 # Stock Data
-getSymbols("NVDA", src = "yahoo", from = "2017-01-01", env = globalenv())
+getSymbols("NVDA", src = "yahoo", from = "2005-01-01", env = globalenv())
 nvda_data <- NVDA
 
 # Macroeconomic Data - force to global environment
