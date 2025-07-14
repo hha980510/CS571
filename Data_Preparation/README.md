@@ -1,56 +1,115 @@
+## 📊 My Stock Price Prediction Data Pipeline
+
+This document details my robust data pipeline, meticulously crafted in R, to prepare historical NVIDIA (NVDA) stock data and relevant macroeconomic indicators for a stock price prediction model. My primary goal is to ensure the data is clean, consistent, and free from look-ahead bias, providing a reliable foundation for machine learning.
 
 ---
 
-## 🚀 How the Data Pipeline Works
+## 🚀 Pipeline Orchestration: `data_pipeline.R`
 
-The core pipeline is orchestrated in the `data_pipeline.R` file, which automates the following stages:
-
-### 1. 📥 Data Import
-**File:** `Data_Preparation/import_data.R`  
-- Loads historical NVIDIA stock prices using `quantmod::getSymbols()`  
-- Stores data as `nvda_data`
-
-### 2. 🧼 Handling Missing Values
-**File:** `Data_Preparation/handle_missing.R`  
-- Fills NA values using `na.locf()`  
-- Ensures a continuous time series
-
-### 3. 🛠️ Feature Engineering
-**File:** `Data_Preparation/feature_engineering.R`  
-- Adds technical indicators:
-  - RSI (14)
-  - MACD & Signal Line
-  - 20-day Volatility
-  - Lag features (close and return)
-  - Log returns
-  - Scaled indicators
-
-### 4. 🧹 Column Structure Cleanup
-**File:** `Data_Wrangling/clean_column_structure.R`  
-- Resets column names to lower_snake_case  
-- Removes redundant or unnamed columns
-
-### 5. 🔍 Data Quality Checks
-**File:** `Data_Wrangling/data_quality_checks.R`  
-- Verifies no duplicate timestamps  
-- Prints structure and NA counts  
-- Saves cleaned dataset both as:
-  - A CSV file at `/cleaned_data/nvda_cleaned.csv`  
-  - An in-memory `nvda_data` dataframe for use in analysis scripts
+This file serves as the **master script** for the entire data preparation process. I structured it this way to ensure **reproducibility** and **automation**. By simply running `source("data_pipeline.R")`, I can execute the full sequence of data import, cleaning, feature engineering, and quality checks in the correct order. This is a critical design choice for an analytical project, allowing me to easily re-run the pipeline when new data is available or if I modify any of the underlying processing steps.
 
 ---
 
-## 💾 Saving Outputs
+## 📥 Stage 1: Data Import (`Data_Preparation/import_data.R`)
 
-- Cleaned and processed data is saved as:
-  - `nvda_data` (in-memory dataframe)
-  - `/cleaned_data/nvda_cleaned.csv` (for persistence and sharing)
+This is where I first acquire the raw ingredients for my analysis.
+
+* **What it does:**
+    * I use `quantmod::getSymbols()` to download **historical daily NVIDIA (NVDA) stock prices** (Open, High, Low, Close, Volume, Adjusted Close) directly from Yahoo Finance, starting from **January 1, 2005**. This is my primary time series and the asset I aim to predict.
+    * Simultaneously, I fetch **macroeconomic indicators** from the Federal Reserve Economic Data (FRED) database, starting from **January 1, 2017**. These include:
+        * **CPIAUCNS:** Consumer Price Index (All Urban Consumers).
+        * **FEDFUNDS:** Federal Funds Effective Rate.
+        * **DGS10:** 10-Year Treasury Constant Maturity Rate.
+        * **UNRATE:** Unemployment Rate.
+        * **GDP:** Gross Domestic Product.
+        * **DTWEXM:** Nominal Major Currencies U.S. Dollar Index.
+* **Period Taken:** NVIDIA data from 2005-01-01; Macroeconomic data from 2017-01-01.
+* **Why this period:** The **NVIDIA** data provides a long history for technical analysis. The macroeconomic data's start date (2017) is a constraint based on the availability of these specific **FRED** series, which will become a key challenge later in the pipeline.
+* **Challenge & Decision:** The main challenge here is dealing with **disparate start dates** and **differing frequencies** of the raw data. My decision is to import everything available, then handle the alignment and missingness in the subsequent `handle_missing.R` script. I opt for `xts` objects from `quantmod` as they are highly efficient for time series operations in R.
 
 ---
 
-## 🔁 Re-run Pipeline
+## 🧼 Stage 2: Handling Missing Values (`Data_Preparation/handle_missing.R`)
 
-To re-run the entire pipeline at once, simply execute:
+This is arguably the most critical and complex stage, where I confront the business-specific challenge of data availability lags for economic indicators. My overarching goal is to avoid **look-ahead bias**, meaning my model must *only* use information that was genuinely public and available at the time of a given prediction.
 
-```r
-source("data_pipeline.R")
+* **What it does:**
+    * **Universal Daily Template:** I first establish a complete `daily_template` covering every single day within the combined range of my stock and macro data. This template serves as the foundation for aligning all series.
+    * **Indicator-Specific Cleaning:**
+        * **CPIAUCNS (Consumer Price Index)** 📈
+            * **Specification:** Monthly inflation data. FRED typically indexes it to the first day of the reference month (e.g., May's CPI is 2025-05-01).
+            * **Business Specificity/Challenge:** The CPI for month 'X' isn't released until around the **middle of month 'X+1'**. If I were to use the CPI on its reference date, my model would be "seeing into the future." This is a classic source of look-ahead bias in financial modeling. 
+            * **Decision/Technique:** I apply a **date shift**: `index(CPIAUCNS) + months(1) + days(14)`. This approximates the actual release date. Then, I `merge` this onto the `daily_template` and apply `na.locf()` (Last Observation Carried Forward). This means the last publicly announced CPI value is held constant until the next release, accurately reflecting market information.
+        * **UNRATE (Unemployment Rate)** 🧑‍💼
+            * **Specification:** Monthly measure of labor market health. FRED indexes it to the first day of the reference month.
+            * **Business Specificity/Challenge:** Similar to CPI, the Unemployment Rate for month 'X' is released on the **first Friday of month 'X+1'**. Again, look-ahead bias is a risk.
+            * **Decision/Technique:** I apply a **date shift**: `index(UNRATE) + months(1)`. While not precisely the first Friday, it's a close approximation that captures the monthly lag effectively. I then `merge` and apply `na.locf()`, ensuring only the latest *released* unemployment data is used.
+        * **GDP (Gross Domestic Product)** 📊
+            * **Specification:** Quarterly measure of economic output. FRED indexes it to the first day of the quarter.
+            * **Business Specificity/Challenge:** GDP data for quarter 'Q' is typically released in the **first month of quarter 'Q+1'**. This is a longer lag than monthly indicators.
+            * **Decision/Technique:** I apply a **date shift**: `index(GDP) + months(3) - days(1)` (approximating the end of the first month of the next quarter). After merging, `na.locf()` fills the daily gaps with the last known quarterly GDP figure.
+        * **FEDFUNDS (Federal Funds Effective Rate), DGS10 (10-Year Treasury Rate), DTWEXM (U.S. Dollar Index)** 🏦
+            * **Specification:** These are largely **daily** (business day) indicators reflecting short-term interest rates, long-term bond yields, and currency strength.
+            * **Business Specificity/Challenge:** While daily, they are not reported on weekends or holidays, creating small gaps.
+            * **Decision/Technique:** I directly `merge` these with the `daily_template`. The resulting NAs for non-business days are then filled using `na.locf(..., fromLast = TRUE)`. This ensures that on any given day, the last available rate or index value is carried forward until a new one is published, which is the standard market practice.
+    * All individual daily macro series are then combined into a single `macro_data_combined_daily` `xts` object.
+* **Challenge Addressed:** **Look-ahead bias** and **frequency mismatch** are the core challenges tackled by this script. My decisions to shift dates to release dates and use `na.locf()` are fundamental to creating a realistic information environment for the model.
+
+---
+
+## 🛠️ Stage 3: Feature Engineering (`Data_Preparation/feature_engineering.R`)
+
+In this script, I enrich my core `nvda_data` with features that capture market dynamics and integrate broader economic context.
+
+* **What it does:**
+    * **Technical Indicators:** I calculate commonly used technical indicators:
+        * **RSI (Relative Strength Index, 14-period):** A momentum oscillator to gauge overbought or oversold conditions.
+        * **MACD (Moving Average Convergence Divergence) & Signal Line:** A trend-following momentum indicator.
+        * **20-day Volatility:** The standard deviation of 20-day log returns, measuring price fluctuation.
+    * **Return Features:** I calculate **daily logarithmic returns**, which are preferred for their additive properties and more symmetrical distribution.
+    * **Lag Features:** I create lagged versions of the closing price (`lag_close_1`) and log return (`lag_return_1`). These are vital as past values are often strong predictors of future values in time series.
+    * **Scaled Features:** I **standardize** the closing price and RSI (`scale(Cl(nvda_data))` and `scale(nvda_data$RSI14)`). This transforms them to have a mean of 0 and a standard deviation of 1.
+    * **Outlier Detection:** I derive a `z_return` (scaled log return) and create an `outlier` flag for extreme price movements (e.g., `abs(z_return) > 3`). This allows for potential special handling or analysis of significant events.
+    * **Macroeconomic Integration:** Finally, I perform a `merge` of the `macro_data_combined_daily` (from the previous step) with `nvda_data` based on their shared daily index. Column names are then cleaned for consistency (e.g., `cpi`, `fed_funds`).
+* **Period Taken:** This script operates on the combined `nvda_data` and `macro_data_combined_daily`. The effective start date for fully populated features will be constrained by the availability of all required past data for indicator calculation (e.g., 20 days for volatility) and the macro data's start (2017).
+* **Business Specificity:** Technical indicators are widely used by traders to identify trends, momentum, and potential reversal points. Lag features are a direct application of the time-series nature of stock data. Macroeconomic factors provide a top-down view that can influence market sentiment and valuations.
+* **Challenge & Decision:**
+    * **Challenge:** The main challenge is the initial NA values generated by technical indicator calculations (e.g., the first 19 days of a 20-day SMA are NA). Also, merging stock data from 2005 with macro data from 2017 means all pre-2017 stock data will have NAs for macro features.
+    * **Decision:** I consciously accept these initial NAs here, knowing they will be systematically handled in the final data quality check. The scaling decision is crucial for many ML models which perform poorly or converge slowly with unscaled data.
+
+---
+
+## 🧹 Stage 4: Column Structure Cleanup (`Data_Wrangling/clean_column_structure.R`)
+
+This stage focuses on refining the structure of the dataset.
+
+* **What it does:**
+    * I identify and remove any columns that have zero (or near-zero) variance. This means columns where all values are identical or almost identical.
+* **Period Taken:** Operates on the full `nvda_data` object at this point.
+* **Business Specificity:** In a dynamic financial environment, features should provide discriminative information.
+* **Challenge & Decision:**
+    * **Challenge:** Sometimes, after merging or specific calculations, columns might inadvertently end up with constant values (e.g., if a data source consistently reported '0' for a period, or a feature was always 'TRUE' within a subset). Such columns provide no predictive power.
+    * **Decision:** My decision is to remove these constant columns. They add computational overhead without contributing to model learning. It's a form of dimensionality reduction and noise removal.
+
+---
+
+## 🔍 Stage 5: Data Quality Checks (`Data_Wrangling/data_quality_checks.R`)
+
+This is my final gate, ensuring the dataset is pristine and ready for modeling.
+
+* **What it does:**
+    * I verify that there are no duplicate timestamps in the `nvda_data` index. While `xts` largely handles this, an explicit check confirms data integrity.
+    * **Critical Cleaning: NA Removal** 🗑️
+        * I explicitly run `nvda_data <- na.omit(nvda_data)`. This command removes any row from the `xts` object where *any* column contains an `NA` value.
+    * **Saving Cleaned Data:** The final, processed `nvda_data` `xts` object is converted into a standard `data.frame` for broader compatibility. This `data.frame` is then saved in two formats:
+        * `Data_Clean/cleaned_nvda_data.csv`: A widely readable format for persistence and sharing.
+        * `Data_Clean/cleaned_nvda_data.rds`: An R-native binary format that is faster to load back into R and preserves object structure.
+    * The `nvda_data` object also remains available in the R session's memory.
+* **Period Taken:** After `na.omit()`, the effective start date of my cleaned dataset is **constrained by the latest start date of a non-NA feature**. Given that macroeconomic data starts in 2017, and technical indicators have a burn-in period, my final cleaned data set will likely begin sometime in **early 2017** (e.g., after the first few weeks of January 2017 to allow for 20-day lookbacks on daily macro data that started then).
+* **Business Specificity:** A model trained on incomplete or inconsistent data will perform poorly and give unreliable predictions.
+* **Challenge & Decision:**
+    * **Challenge:** The most significant challenge addressed here is the **presence of `NA`s** that are inherent from:
+        1.  **Indicator "Burn-in":** Technical indicators require historical data (e.g., 20 days for volatility) to compute their first valid value. The initial rows for these columns will be `NA`.
+        2.  **Macro Data Start Date:** My NVIDIA data starts in 2005, but macroeconomic data only begins in 2017. Any NVIDIA data rows before 2017 will have `NA`s for all macroeconomic features.
+    * **Decision:** I make the crucial decision to **remove all rows containing `NA`s using `na.omit()`**.
+        * **Why Delete?** Many machine learning models simply **cannot handle `NA` values**; they will either crash, produce errors, or yield biased results. While imputation is an alternative, for this specific context (initial `NA`s due to data availability or calculation necessity), **deleting is the most robust and honest approach**. It ensures that every observation my model learns from is a **complete case**, reflecting a moment in time where all chosen features were genuinely available. This avoids introducing arbitrary values that might skew the model's understanding of real-world relationships. My model will thus operate on the period where it has the full, consistent informational context.
