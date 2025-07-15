@@ -141,3 +141,43 @@ This is my final gate, ensuring the dataset is pristine and ready for modeling.
 **Files Generated in `Data_Clean` folder:**
 * **`cleaned_nvda_data.csv`**: The final, complete-case, cleaned dataset in CSV format. This is ready for direct use in various modeling environments or for quick viewing.
 * **`cleaned_nvda_data.rds`**: The final, complete-case, cleaned dataset in R data serialization format. This is highly efficient for loading back into R while preserving all data types and `data.frame` structure, ideal for subsequent R-based modeling.
+
+## 🎯 Stage 6: Target Variable Creation (`Data_Wrangling/add_targets.R`)
+
+This crucial step transforms the cleaned dataset into a supervised learning format by adding **future target values** for model training and evaluation.
+
+### 🔧 What it does:
+- For each date in the dataset, the script calculates:
+  - **Target_5_Price / Target_10_Price / Target_21_Price**: The actual NVDA closing price after 5, 10, and 21 trading days respectively.
+  - **Target_5_Direction / Target_10_Direction / Target_21_Direction**: A binary classification label:
+    - `1` if the price increases
+    - `0` if the price decreases or stays the same  
+    Computed as:  
+    ```r
+    Direction = ifelse(Future_Price > Current_Close, 1, 0)
+    ```
+
+### 📈 Business Specificity:
+- These targets align with **1-week**, **2-week**, and **1-month** investment/trading windows.
+- They enable evaluation of both **regression (price forecasting)** and **classification (directional movement)** models.
+
+### ⚠️ Challenges & Decisions:
+- The final 5/10/21 rows naturally lack future data, so the corresponding target columns contain `NA`. These are retained but will be excluded from model training.
+- Targets are calculated using actual future prices, ensuring objective and unbiased ground truth.
+
+### 📁 Output:
+- **`nvda_data_with_targets.rds`**: Final cleaned dataset with all engineered features **plus target values**, saved in the `Data_Clean` folder.
+
+---
+
+## 🔍 Additional Sanity Checks (`Sanity_Checks/check_cleaned_data.R`)
+
+After all features and targets are added, this step validates the data to ensure it's ready for modeling.
+
+### ✅ Key Validations:
+- No unexpected `NA` values (aside from trailing rows with unavailable future targets).
+- All expected target columns are present and correctly typed.
+- Direction labels (`0`/`1`) are reasonably distributed.
+- Future price targets are **highly but naturally correlated** with the current NVDA.Close price, confirming correctness.
+
+This step gives full confidence before modeling begins and avoids hidden data quality issues downstream.
