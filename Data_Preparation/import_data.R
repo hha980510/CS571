@@ -10,7 +10,7 @@ library(TTR) # TTR is needed for some indicators later, good to load early
 
 # Stock Data
 # Ensure it's explicitly assigned to nvda_data and not just NVDA from getSymbols
-getSymbols("NVDA", src = "yahoo", from = "2005-01-01", env = globalenv())
+getSymbols("NVDA", src = "yahoo", from = "2017-01-01", env = globalenv())
 nvda_data <- NVDA # Renaming for consistency
 
 # Macroeconomic Data - force to global environment
