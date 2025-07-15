@@ -6,7 +6,7 @@ source("Modeling/05_evaluation_metrics.R")
 
 # --- Model configuration ---
 model_name <- "Linear_Regression"
-current_horizon <- "1M" # Change for "1W", "2W", "1M" as needed for each run
+current_horizon <- "1W" # Change for "1W", "2W", "1M" as needed for each run
 
 target_col <- paste0("Target_", current_horizon, "_Price")
 directional_target_col <- paste0("Target_", current_horizon, "_Direction")

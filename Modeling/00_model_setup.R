@@ -13,7 +13,7 @@ library(Metrics)
 # --- 2. Load Cleaned Data ---
 cleaned_data_path <- "Data_Clean/cleaned_nvda_data.rds"
 if (!file.exists(cleaned_data_path)) {
-  stop("❌ Cleaned data not found. Run data cleaning script first.")
+  stop("\u274c Cleaned data not found. Run data cleaning script first.")
 }
 nvda_data_cleaned <- readRDS(cleaned_data_path)
 
@@ -29,13 +29,13 @@ if ("Date" %in% names(nvda_data_cleaned)) {
   nvda_data_cleaned$Date <- as.Date(nvda_data_cleaned$Date)
   nvda_data_cleaned <- nvda_data_cleaned %>% select(Date, everything())
 } else {
-  stop("❌ 'Date' column not found in cleaned data.")
+  stop("\u274c 'Date' column not found in cleaned data.")
 }
 
 # Order by date
 nvda_data_cleaned <- nvda_data_cleaned[order(nvda_data_cleaned$Date), ]
 
-message(paste0("✅ Cleaned data loaded. Total rows: ", nrow(nvda_data_cleaned)))
+message(paste0("\u2705 Cleaned data loaded. Total rows: ", nrow(nvda_data_cleaned)))
 message(paste0("   Data starts: ", min(nvda_data_cleaned$Date), " ends: ", max(nvda_data_cleaned$Date)))
 
 # --- 3. Define Target Variables (Future Stock Prices and Direction) ---
@@ -48,7 +48,7 @@ horizon_1_month <- 21
 # Identify current Close price column
 current_close_col_name <- "NVDA.Close"
 if (!(current_close_col_name %in% names(nvda_data_cleaned))) {
-  stop(paste0("❌ Close price column '", current_close_col_name, "' not found."))
+  stop(paste0("\u274c Close price column '", current_close_col_name, "' not found."))
 }
 
 # Create lagged future close prices (targets)
@@ -59,7 +59,7 @@ nvda_data_cleaned <- nvda_data_cleaned %>%
     Target_1M_Price = lead(!!sym(current_close_col_name), n = horizon_1_month)
   )
 
-# Create directional targets (1 for increase, 0 for decrease/no change)
+# Create directional targets
 nvda_data_cleaned <- nvda_data_cleaned %>%
   mutate(
     Target_1W_Direction = ifelse(sign(Target_1W_Price - !!sym(current_close_col_name)) == 1, 1, 0),
@@ -67,32 +67,42 @@ nvda_data_cleaned <- nvda_data_cleaned %>%
     Target_1M_Direction = ifelse(sign(Target_1M_Price - !!sym(current_close_col_name)) == 1, 1, 0)
   )
 
-# Remove rows with NAs introduced by lead() for targets
+# Remove rows with NAs introduced by lead()
 initial_rows_after_target <- nrow(nvda_data_cleaned)
 nvda_data_cleaned <- na.omit(nvda_data_cleaned)
 removed_rows_target_na <- initial_rows_after_target - nrow(nvda_data_cleaned)
 if (removed_rows_target_na > 0) {
-  message(paste0("🧹 Removed ", removed_rows_target_na, " rows due to NA in target variables."))
+  message(paste0("\ud83e\uddf9 Removed ", removed_rows_target_na, " rows due to NA in target variables."))
 }
 
 # --- 4. Define Feature Columns ---
-# All columns except Date and Target columns
-feature_cols <- names(nvda_data_cleaned)[!names(nvda_data_cleaned) %in% c("Date",
-                                                                           "Target_1W_Price", "Target_2W_Price", "Target_1M_Price",
-                                                                           "Target_1W_Direction", "Target_2W_Direction", "Target_1M_Direction")]
+feature_cols <- names(nvda_data_cleaned)[!names(nvda_data_cleaned) %in% c(
+  "Date",
+  "Target_1W_Price", "Target_2W_Price", "Target_1M_Price",
+  "Target_1W_Direction", "Target_2W_Direction", "Target_1M_Direction"
+)]
 
 # Remove zero-variance features
 numeric_feature_cols <- feature_cols[sapply(nvda_data_cleaned[, feature_cols], is.numeric)]
 zero_variance_features <- numeric_feature_cols[sapply(nvda_data_cleaned[, numeric_feature_cols], var) == 0]
 
-if(length(zero_variance_features) > 0) {
-  message(paste0("🧹 Removing ", length(zero_variance_features), " zero-variance feature(s): ", paste(zero_variance_features, collapse = ", ")))
+if (length(zero_variance_features) > 0) {
+  message(paste0("\ud83e\uddf9 Removing ", length(zero_variance_features), " zero-variance feature(s): ", paste(zero_variance_features, collapse = ", ")))
   feature_cols <- setdiff(feature_cols, zero_variance_features)
 } else {
-  message("✅ No zero-variance features found.")
+  message("\u2705 No zero-variance features found.")
 }
 
-message(paste0("✅ Feature columns identified. Number of features: ", length(feature_cols)))
-message("Common setup complete. Data is loaded, targets are created, and features are defined.")
+# Optional: Save feature column names to disk for consistency across models
+saveRDS(feature_cols, file = "Data_Clean/feature_columns.rds")
 
-# Removed the rm(list = c(...)) line here. This was the issue.
+# Optional: Scale numeric features if needed by model (e.g., Ridge, Lasso, SVR)
+scale_features <- FALSE # Set to TRUE if standardization needed
+if (scale_features) {
+  preproc <- preProcess(nvda_data_cleaned[, feature_cols], method = c("center", "scale"))
+  nvda_data_cleaned[, feature_cols] <- predict(preproc, nvda_data_cleaned[, feature_cols])
+  message("\u2705 Feature scaling applied.")
+}
+
+message(paste0("\u2705 Feature columns identified. Number of features: ", length(feature_cols)))
+message("\u2705 Common setup complete. Data is loaded, targets are created, and features are defined.")
