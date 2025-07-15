@@ -1,23 +1,27 @@
 # ============================
 # Script: clean_column_structure.R
-# Purpose: Clean column structure of nvda_data
+# Purpose: Clean column structure of nvda_data (remove constants)
+# Input: Data_Clean/nvda_data_fully_engineered.rds
+# Save: nvda_data_structured_clean.rds
 # ============================
 
 library(dplyr)
-library(xts) # Ensure xts is loaded for proper xts operations, even if dplyr is used
+library(xts)
+
+# --- Load data from previous stage ---
+nvda_data <- readRDS("Data_Clean/nvda_data_fully_engineered.rds")
 
 if (!exists("nvda_data")) stop("❌ 'nvda_data' is missing. Please run feature_engineering.R first.")
 
 # Drop constant columns
-# Use coredata() to work on the numeric matrix, as sapply on xts directly can be tricky
-# And then re-create xts if necessary, or ensure the operation is xts-compatible
-# A safer way is to identify columns to keep and subset
 cols_to_keep <- sapply(nvda_data, function(col) {
-  # Use na.omit to ignore NAs when checking for unique values
   unique_vals <- unique(na.omit(coredata(col)))
   length(unique_vals) > 1
 })
 
 nvda_data <- nvda_data[, cols_to_keep]
 
-print("✅ Clean column structure complete.")
+# --- Save Data After Structure Cleaning ---
+saveRDS(nvda_data, file = "Data_Clean/nvda_data_structured_clean.rds")
+
+print("✅ Clean column structure complete and data saved.")
