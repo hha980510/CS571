@@ -1,0 +1,887 @@
+---
+title: "Modeling with cleaned data"
+author: "Team Irma, Omoniyi, Parvathi and Hyunsung"
+date: "`r Sys.Date()`"
+output: html_document
+---
+```{r, warning=FALSE, message=FALSE}
+# ============================
+#  Load Required Libraries
+# ============================
+library(tidyverse)
+library(lubridate)
+library(caret)
+library(TTR)
+library(Metrics)
+library(zoo)
+library(randomForest)
+library(xgboost)
+library(e1071)
+library(tseries)
+
+# ============================
+# Load Dataset
+# ============================
+nvda_data <- read_csv("cleaned_nvda_data.csv")
+
+# ============================
+# ️ Ensure Date is Properly Formatted
+# ============================
+nvda_data <- nvda_data %>%
+  mutate(date = as.Date(date)) %>%
+  arrange(date)  # Sort chronologically
+
+# ============================
+#  Remove Missing Values
+# ============================
+nvda_data <- nvda_data %>% drop_na()
+
+# ============================
+#  Split into Training (80%) and Testing (20%)
+# ============================
+set.seed(123)  # For reproducibility
+
+n <- nrow(nvda_data)
+train_index <- 1:floor(0.8 * n)
+test_index <- (floor(0.8 * n) + 1):n
+
+train_data <- nvda_data[train_index, ]
+test_data  <- nvda_data[test_index, ]
+
+# ============================
+#  Add log_return for financial metrics (to test set)
+# ============================
+test_data <- test_data %>%
+  mutate(log_return = c(NA, diff(log(NVDA.Close))))
+```
+
+##  BASELINE MODEL
+
+```{r}
+# ============================
+#  BASELINE MODEL: Predict today's close as yesterday's close
+# ============================
+
+# Actual values from the test set
+actual <- test_data$NVDA.Close
+
+# Baseline prediction: yesterday's close
+pred_baseline <- test_data$lag_close_1
+
+# Log return for financial strategy
+log_return <- test_data$log_return
+lag_close <- test_data$lag_close_1
+
+# ============================
+#  Evaluation Metrics
+# ============================
+
+# 1. MAPE (Mean Absolute Percentage Error)
+mape_baseline <- mean(abs((pred_baseline - actual) / actual), na.rm = TRUE)
+
+# 2. RMSE (Root Mean Squared Error)
+rmse_baseline <- sqrt(mean((pred_baseline - actual)^2, na.rm = TRUE))
+
+# 3. Directional Accuracy
+directional_accuracy <- function(actual, predicted) {
+  mean(sign(diff(actual)) == sign(diff(predicted)), na.rm = TRUE)
+}
+acc_baseline <- directional_accuracy(actual, pred_baseline)
+
+# 4–6. Financial Metrics: Sharpe Ratio, Max Drawdown, Cumulative Return
+calculate_strategy_metrics <- function(predictions, lag_close, log_return) {
+  strategy_return <- ifelse(predictions > lag_close, log_return, 0)
+  strategy_cum_return <- exp(cumsum(replace_na(strategy_return, 0)))
+  sharpe_ratio <- mean(strategy_return, na.rm = TRUE) / sd(strategy_return, na.rm = TRUE)
+  drawdown <- cummax(strategy_cum_return) - strategy_cum_return
+  max_drawdown <- max(drawdown / cummax(strategy_cum_return), na.rm = TRUE)
+  cumulative_return <- last(strategy_cum_return)
+  return(list(
+    sharpe_ratio = sharpe_ratio,
+    max_drawdown = max_drawdown,
+    cumulative_return = cumulative_return
+  ))
+}
+
+metrics_baseline <- calculate_strategy_metrics(pred_baseline, lag_close, log_return)
+
+# ============================
+#  Baseline Model Performance Output
+# ============================
+
+cat(" BASELINE MODEL PERFORMANCE:\n")
+cat("----------------------------------\n")
+cat("• MAPE:              ", round(mape_baseline * 100, 2), "%\n")
+cat("• RMSE:              ", round(rmse_baseline, 4), "\n")
+cat("• Directional Acc.:  ", round(acc_baseline * 100, 2), "%\n")
+cat("• Sharpe Ratio:      ", round(metrics_baseline$sharpe_ratio, 4), "\n")
+cat("• Max Drawdown:      ", round(metrics_baseline$max_drawdown * 100, 2), "%\n")
+cat("• Cumulative Return: ", round(metrics_baseline$cumulative_return, 4), "\n")
+
+```
+
+##  LINEAR REGRESSION MODEL
+
+```{r}
+# ============================
+#  LINEAR REGRESSION MODEL (REFINED)
+# ============================
+
+# Define features and target
+features <- c(
+  "lag_close_1", "SMA20", "RSI14", "MACD", "Signal",
+  "volatility_20", "lag_return_1",
+  "cpi", "fed_funds", "treasury_10y", "unemployment",
+  "gdp", "usd_index"
+)
+
+target <- "NVDA.Close"
+
+#  Create the modeling formula
+lr_formula <- as.formula(paste(target, "~", paste(features, collapse = " + ")))
+
+#  Fit linear regression model
+lm_model <- lm(formula = lr_formula, data = train_data)
+
+#  Predict on test data
+pred_lm <- predict(lm_model, newdata = test_data)
+
+#  Define actual values and other inputs for metrics
+actual <- test_data$NVDA.Close
+log_return <- test_data$log_return
+lag_close <- test_data$lag_close_1
+
+# ============================
+#  Evaluation Metrics
+# ============================
+
+# 1. MAPE (Mean Absolute Percentage Error)
+mape_lm <- mean(abs((pred_lm - actual) / actual), na.rm = TRUE)
+
+# 2. RMSE (Root Mean Squared Error)
+rmse_lm <- sqrt(mean((pred_lm - actual)^2, na.rm = TRUE))
+
+# 3. Directional Accuracy
+directional_accuracy <- function(actual, predicted) {
+  mean(sign(diff(actual)) == sign(diff(predicted)), na.rm = TRUE)
+}
+acc_lm <- directional_accuracy(actual, pred_lm)
+
+# 4–6. Financial Metrics: Sharpe Ratio, Max Drawdown, Cumulative Return
+calculate_strategy_metrics <- function(predictions, lag_close, log_return) {
+  strategy_return <- ifelse(predictions > lag_close, log_return, 0)
+  strategy_cum_return <- exp(cumsum(replace_na(strategy_return, 0)))
+  sharpe_ratio <- mean(strategy_return, na.rm = TRUE) / sd(strategy_return, na.rm = TRUE)
+  drawdown <- cummax(strategy_cum_return) - strategy_cum_return
+  max_drawdown <- max(drawdown / cummax(strategy_cum_return), na.rm = TRUE)
+  cumulative_return <- last(strategy_cum_return)
+  return(list(
+    sharpe_ratio = sharpe_ratio,
+    max_drawdown = max_drawdown,
+    cumulative_return = cumulative_return
+  ))
+}
+
+metrics_lm <- calculate_strategy_metrics(pred_lm, lag_close, log_return)
+
+# ============================
+#  Output Linear Regression Performance
+# ============================
+
+cat(" LINEAR REGRESSION MODEL PERFORMANCE:\n")
+cat("----------------------------------------\n")
+cat("• MAPE:              ", round(mape_lm * 100, 2), "%\n")
+cat("• RMSE:              ", round(rmse_lm, 4), "\n")
+cat("• Directional Acc.:  ", round(acc_lm * 100, 2), "%\n")
+cat("• Sharpe Ratio:      ", round(metrics_lm$sharpe_ratio, 4), "\n")
+cat("• Max Drawdown:      ", round(metrics_lm$max_drawdown * 100, 2), "%\n")
+cat("• Cumulative Return: ", round(metrics_lm$cumulative_return, 4), "\n")
+
+# Optional: Uncomment to review model summary
+# summary(lm_model)
+
+```
+
+
+## RANDOM FOREST MODEL
+
+```{r}
+# ============================
+#  RANDOM FOREST MODEL (REFINED)
+# ============================
+
+#  Define feature set and target
+features <- c(
+  "lag_close_1", "SMA20", "RSI14", "MACD", "Signal",
+  "volatility_20", "lag_return_1",
+  "cpi", "fed_funds", "treasury_10y", "unemployment",
+  "gdp", "usd_index"
+)
+target <- "NVDA.Close"
+
+#   Construct formula
+rf_formula <- as.formula(paste(target, "~", paste(features, collapse = " + ")))
+
+#  Train Random Forest model
+set.seed(42)  # For reproducibility
+rf_model <- randomForest(
+  formula = rf_formula,
+  data = train_data,
+  ntree = 500,                        # Number of trees
+  mtry = floor(length(features) / 3),# Features per split
+  importance = TRUE                  # Track variable importance
+)
+
+#  Predict on test data
+pred_rf <- predict(rf_model, newdata = test_data)
+
+#  Define actual values and metrics inputs
+actual <- test_data$NVDA.Close
+log_return <- test_data$log_return
+lag_close <- test_data$lag_close_1
+
+# ============================
+# Evaluation Metrics
+# ============================
+
+# 1. MAPE
+mape_rf <- mean(abs((pred_rf - actual) / actual), na.rm = TRUE)
+
+# 2. RMSE
+rmse_rf <- sqrt(mean((pred_rf - actual)^2, na.rm = TRUE))
+
+# 3. Directional Accuracy
+acc_rf <- directional_accuracy(actual, pred_rf)
+
+# 4–6. Financial Metrics
+metrics_rf <- calculate_strategy_metrics(pred_rf, lag_close, log_return)
+
+# ============================
+#  Output Random Forest Performance
+# ============================
+
+cat(" RANDOM FOREST MODEL PERFORMANCE:\n")
+cat("-------------------------------------\n")
+cat("• MAPE:              ", round(mape_rf * 100, 2), "%\n")
+cat("• RMSE:              ", round(rmse_rf, 4), "\n")
+cat("• Directional Acc.:  ", round(acc_rf * 100, 2), "%\n")
+cat("• Sharpe Ratio:      ", round(metrics_rf$sharpe_ratio, 4), "\n")
+cat("• Max Drawdown:      ", round(metrics_rf$max_drawdown * 100, 2), "%\n")
+cat("• Cumulative Return: ", round(metrics_rf$cumulative_return, 4), "\n")
+
+# Optional: Feature importance plot
+# varImpPlot(rf_model, main = "Random Forest Variable Importance")
+
+```
+##  SUPPORT VECTOR REGRESSION (SVR)
+
+```{r}
+# ============================
+#  SUPPORT VECTOR REGRESSION (TUNED)
+# ============================
+#  Define features and target
+features <- c(
+  "lag_close_1", "SMA20", "RSI14", "MACD", "Signal",
+  "volatility_20", "lag_return_1",
+  "cpi", "fed_funds", "treasury_10y", "unemployment",
+  "gdp", "usd_index"
+)
+target <- "NVDA.Close"
+
+#  Prepare training matrices
+x_train <- train_data[, features]
+y_train <- train_data[[target]]
+x_test <- test_data[, features]
+y_test <- test_data[[target]]
+
+#  Proper SVR tuning using tune.svm — no 'ranges ='
+set.seed(42)
+tuned_svr <- tune.svm(
+  x = x_train,
+  y = y_train,
+  kernel = "radial",
+  cost = c(0.1, 1, 10),
+  gamma = c(0.01, 0.1, 1),
+  epsilon = c(0.1, 0.2)
+)
+
+#  Use best model
+best_svr <- tuned_svr$best.model
+pred_svr <- predict(best_svr, newdata = x_test)
+
+#  Define inputs for evaluation
+actual <- y_test
+log_return <- test_data$log_return
+lag_close <- test_data$lag_close_1
+
+# ============================
+#  Metrics Evaluation
+# ============================
+
+# 1. MAPE
+mape_svr <- mean(abs((pred_svr - actual) / actual), na.rm = TRUE)
+
+# 2. RMSE
+rmse_svr <- sqrt(mean((pred_svr - actual)^2, na.rm = TRUE))
+
+# 3. Directional Accuracy
+acc_svr <- directional_accuracy(actual, pred_svr)
+
+# 4–6. Financial Metrics
+metrics_svr <- calculate_strategy_metrics(pred_svr, lag_close, log_return)
+
+# ============================
+# Output
+# ============================
+
+cat(" SVR MODEL PERFORMANCE (TUNED):\n")
+cat("----------------------------------\n")
+cat("• MAPE:              ", round(mape_svr * 100, 2), "%\n")
+cat("• RMSE:              ", round(rmse_svr, 4), "\n")
+cat("• Directional Acc.:  ", round(acc_svr * 100, 2), "%\n")
+cat("• Sharpe Ratio:      ", round(metrics_svr$sharpe_ratio, 4), "\n")
+cat("• Max Drawdown:      ", round(metrics_svr$max_drawdown * 100, 2), "%\n")
+cat("• Cumulative Return: ", round(metrics_svr$cumulative_return, 4), "\n")
+cat("• Best Cost:         ", best_svr$cost, "\n")
+cat("• Best Gamma:        ", best_svr$gamma, "\n")
+cat("• Best Epsilon:      ", best_svr$epsilon, "\n")
+
+```
+
+##  Tuned Random Forest Model
+
+```{r}
+# ============================
+#  TUNED RANDOM FOREST MODEL
+# ============================
+
+#  Features and target
+features <- c(
+  "lag_close_1", "SMA20", "RSI14", "MACD", "Signal",
+  "volatility_20", "lag_return_1",
+  "cpi", "fed_funds", "treasury_10y", "unemployment",
+  "gdp", "usd_index"
+)
+target <- "NVDA.Close"
+
+#  Define formula
+rf_formula <- as.formula(paste(target, "~", paste(features, collapse = " + ")))
+
+#  Training control
+set.seed(123)
+control <- trainControl(
+  method = "repeatedcv",
+  number = 5,
+  repeats = 3,
+  verboseIter = TRUE,
+  savePredictions = "final"
+)
+
+# Tuning grid
+tune_grid <- expand.grid(
+  mtry = 2:6,
+  splitrule = c("variance", "extratrees"),
+  min.node.size = c(1, 3, 5)
+)
+
+# Parallel processing (optional)
+library(doParallel)
+cl <- makePSOCKcluster(4)
+registerDoParallel(cl)
+
+#  Train model using ranger via caret
+rf_tuned <- train(
+  form = rf_formula,
+  data = train_data,
+  method = "ranger",
+  trControl = control,
+  tuneGrid = tune_grid,
+  importance = "impurity",
+  num.trees = 500,
+  metric = "RMSE"
+)
+
+#  Stop parallel
+stopCluster(cl)
+
+#  Predict
+pred_rf_tuned <- predict(rf_tuned, newdata = test_data)
+
+# ============================
+# Evaluation Metrics
+# ============================
+
+actual <- test_data$NVDA.Close
+log_return <- test_data$log_return
+lag_close <- test_data$lag_close_1
+
+# 1. MAPE
+mape_rf_tuned <- mean(abs((pred_rf_tuned - actual) / actual), na.rm = TRUE)
+
+# 2. RMSE
+rmse_rf_tuned <- sqrt(mean((pred_rf_tuned - actual)^2, na.rm = TRUE))
+
+# 3. Directional Accuracy
+acc_rf_tuned <- directional_accuracy(actual, pred_rf_tuned)
+
+# 4–6. Financial metrics
+metrics_rf_tuned <- calculate_strategy_metrics(pred_rf_tuned, lag_close, log_return)
+
+# ============================
+# Output Results
+# ============================
+
+cat(" TUNED RANDOM FOREST PERFORMANCE:\n")
+cat("----------------------------------\n")
+cat("• MAPE:              ", round(mape_rf_tuned * 100, 2), "%\n")
+cat("• RMSE:              ", round(rmse_rf_tuned, 4), "\n")
+cat("• Directional Acc.:  ", round(acc_rf_tuned * 100, 2), "%\n")
+cat("• Sharpe Ratio:      ", round(metrics_rf_tuned$sharpe_ratio, 4), "\n")
+cat("• Max Drawdown:      ", round(metrics_rf_tuned$max_drawdown * 100, 2), "%\n")
+cat("• Cumulative Return: ", round(metrics_rf_tuned$cumulative_return, 4), "\n")
+cat("• Best mtry:         ", rf_tuned$bestTune$mtry, "\n")
+cat("• Split Rule:        ", rf_tuned$bestTune$splitrule, "\n")
+cat("• Min Node Size:     ", rf_tuned$bestTune$min.node.size, "\n")
+
+# Optional: Visualize tuning result
+plot(rf_tuned, main = "Tuned Random Forest Performance")
+
+```
+
+
+##  RIDGE REGRESSION MODEL
+
+```{r}
+# ============================
+#  RIDGE REGRESSION (OPTIMIZED)
+# ============================
+
+library(glmnet)
+library(doParallel)
+
+# Prepare features & target
+features <- c(
+  "lag_close_1", "SMA20", "RSI14", "MACD", "Signal",
+  "volatility_20", "lag_return_1",
+  "cpi", "fed_funds", "treasury_10y", "unemployment",
+  "gdp", "usd_index"
+)
+target <- "NVDA.Close"
+
+#  Create model matrices (exclude intercept column)
+x_train <- model.matrix(as.formula(paste(target, "~", paste(features, collapse = "+"))), data = train_data)[, -1]
+y_train <- train_data[[target]]
+
+x_test <- model.matrix(as.formula(paste(target, "~", paste(features, collapse = "+"))), data = test_data)[, -1]
+y_test <- test_data[[target]]
+
+#  Standardize data (important for Ridge)
+x_train_scaled <- scale(x_train)
+x_test_scaled <- scale(
+  x_test,
+  center = attr(x_train_scaled, "scaled:center"),
+  scale = attr(x_train_scaled, "scaled:scale")
+)
+
+#  Parallel backend for cross-validation
+registerDoParallel(cores = 4)
+
+#  Train Ridge Regression with 10-fold CV
+set.seed(123)
+ridge_model <- cv.glmnet(
+  x = x_train_scaled,
+  y = y_train,
+  alpha = 0,               # Ridge regression
+  nfolds = 10,
+  type.measure = "mse",
+  standardize = FALSE      # Already standardized manually
+)
+
+#  Stop parallel backend
+stopImplicitCluster()
+
+#  Predict on test set using best lambda
+pred_ridge <- predict(ridge_model, newx = x_test_scaled, s = "lambda.min")
+
+#  Evaluation metrics
+log_return <- test_data$log_return
+lag_close <- test_data$lag_close_1
+actual <- y_test
+
+mape_ridge <- mean(abs((pred_ridge - actual) / actual), na.rm = TRUE)
+rmse_ridge <- sqrt(mean((pred_ridge - actual)^2, na.rm = TRUE))
+acc_ridge <- directional_accuracy(actual, pred_ridge)
+metrics_ridge <- calculate_strategy_metrics(pred_ridge, lag_close, log_return)
+
+#  Output results
+cat(" RIDGE REGRESSION PERFORMANCE:\n")
+cat("----------------------------------\n")
+cat("• MAPE:              ", round(mape_ridge * 100, 2), "%\n")
+cat("• RMSE:              ", round(rmse_ridge, 4), "\n")
+cat("• Directional Acc.:  ", round(acc_ridge * 100, 2), "%\n")
+cat("• Sharpe Ratio:      ", round(metrics_ridge$sharpe_ratio, 4), "\n")
+cat("• Max Drawdown:      ", round(metrics_ridge$max_drawdown * 100, 2), "%\n")
+cat("• Cumulative Return: ", round(metrics_ridge$cumulative_return, 4), "\n")
+cat("• Optimal Lambda:    ", format(ridge_model$lambda.min, scientific = TRUE), "\n")
+```
+
+
+##  LASSO REGRESSION MODEL
+
+```{r}
+# ============================
+# LASSO REGRESSION (OPTIMIZED)
+# ============================
+
+library(glmnet)
+library(doParallel)
+
+#  Prepare features & target (reuse from Ridge)
+features <- c(
+  "lag_close_1", "SMA20", "RSI14", "MACD", "Signal",
+  "volatility_20", "lag_return_1",
+  "cpi", "fed_funds", "treasury_10y", "unemployment",
+  "gdp", "usd_index"
+)
+target <- "NVDA.Close"
+
+# Create model matrices (exclude intercept column)
+x_train <- model.matrix(as.formula(paste(target, "~", paste(features, collapse = "+"))), data = train_data)[, -1]
+y_train <- train_data[[target]]
+
+x_test <- model.matrix(as.formula(paste(target, "~", paste(features, collapse = "+"))), data = test_data)[, -1]
+y_test <- test_data[[target]]
+
+#  Standardize data
+x_train_scaled <- scale(x_train)
+x_test_scaled <- scale(
+  x_test,
+  center = attr(x_train_scaled, "scaled:center"),
+  scale = attr(x_train_scaled, "scaled:scale")
+)
+
+#  Parallel backend for cross-validation
+registerDoParallel(cores = 4)
+
+#  Train Lasso Regression with 10-fold CV
+set.seed(123)
+lasso_model <- cv.glmnet(
+  x = x_train_scaled,
+  y = y_train,
+  alpha = 1,               # Lasso regression
+  nfolds = 10,
+  type.measure = "mse",
+  standardize = FALSE      # Already standardized manually
+)
+
+#  Stop parallel backend
+stopImplicitCluster()
+
+#  Predict on test set using best lambda
+pred_lasso <- predict(lasso_model, newx = x_test_scaled, s = "lambda.min")
+
+#  Evaluation metrics
+log_return <- test_data$log_return
+lag_close <- test_data$lag_close_1
+actual <- y_test
+
+mape_lasso <- mean(abs((pred_lasso - actual) / actual), na.rm = TRUE)
+rmse_lasso <- sqrt(mean((pred_lasso - actual)^2, na.rm = TRUE))
+acc_lasso <- directional_accuracy(actual, pred_lasso)
+metrics_lasso <- calculate_strategy_metrics(pred_lasso, lag_close, log_return)
+
+#  Output results
+cat("  LASSO REGRESSION PERFORMANCE:\n")
+cat("----------------------------------\n")
+cat("• MAPE:              ", round(mape_lasso * 100, 2), "%\n")
+cat("• RMSE:              ", round(rmse_lasso, 4), "\n")
+cat("• Directional Acc.:  ", round(acc_lasso * 100, 2), "%\n")
+cat("• Sharpe Ratio:      ", round(metrics_lasso$sharpe_ratio, 4), "\n")
+cat("• Max Drawdown:      ", round(metrics_lasso$max_drawdown * 100, 2), "%\n")
+cat("• Cumulative Return: ", round(metrics_lasso$cumulative_return, 4), "\n")
+cat("• Optimal Lambda:    ", format(lasso_model$lambda.min, scientific = TRUE), "\n")
+
+# Optional: Non-zero coefficients
+nonzero_coefs <- coef(lasso_model, s = "lambda.min")
+nonzero_coefs_matrix <- as.matrix(nonzero_coefs)  # Convert to regular matrix
+nonzero_coefs_filtered <- nonzero_coefs_matrix[nonzero_coefs_matrix != 0, , drop = FALSE]
+
+cat("\n🔍 Non-zero Coefficients:\n")
+print(nonzero_coefs_filtered)
+
+```
+
+
+##  XGBoost Model
+
+```{r}
+# ============================
+# XGBOOST REGRESSION (OPTIMIZED)
+# ============================
+
+library(xgboost)
+
+#  Prepare features & target (same features as before)
+features <- c(
+  "lag_close_1", "SMA20", "RSI14", "MACD", "Signal",
+  "volatility_20", "lag_return_1",
+  "cpi", "fed_funds", "treasury_10y", "unemployment",
+  "gdp", "usd_index"
+)
+target <- "NVDA.Close"
+
+#  Create matrices for XGBoost (numeric matrix)
+x_train <- as.matrix(train_data[, features])
+y_train <- train_data[[target]]
+
+x_test <- as.matrix(test_data[, features])
+y_test <- test_data[[target]]
+
+#  Create DMatrix objects (optimized xgboost format)
+dtrain <- xgb.DMatrix(data = x_train, label = y_train)
+dtest <- xgb.DMatrix(data = x_test)
+
+# Set XGBoost parameters
+params <- list(
+  objective = "reg:squarederror",
+  eta = 0.1,
+  max_depth = 6,
+  min_child_weight = 1,
+  subsample = 0.8,
+  colsample_bytree = 0.8
+)
+
+#  Train model with early stopping
+set.seed(123)
+xgb_model <- xgb.train(
+  params = params,
+  data = dtrain,
+  nrounds = 1000,
+  watchlist = list(train = dtrain),
+  early_stopping_rounds = 20,
+  print_every_n = 50,
+  maximize = FALSE,
+  verbose = 1
+)
+
+#  Predict on test set
+pred_xgb <- predict(xgb_model, dtest)
+
+#  Evaluation metrics
+log_return <- test_data$log_return
+lag_close <- test_data$lag_close_1
+actual <- y_test
+
+mape_xgb <- mean(abs((pred_xgb - actual) / actual), na.rm = TRUE)
+rmse_xgb <- sqrt(mean((pred_xgb - actual)^2, na.rm = TRUE))
+acc_xgb <- directional_accuracy(actual, pred_xgb)
+metrics_xgb <- calculate_strategy_metrics(pred_xgb, lag_close, log_return)
+
+#  Output results
+cat("🎯 XGBOOST PERFORMANCE:\n")
+cat("---------------------------\n")
+cat("• MAPE:              ", round(mape_xgb * 100, 2), "%\n")
+cat("• RMSE:              ", round(rmse_xgb, 4), "\n")
+cat("• Directional Acc.:  ", round(acc_xgb * 100, 2), "%\n")
+cat("• Sharpe Ratio:      ", round(metrics_xgb$sharpe_ratio, 4), "\n")
+cat("• Max Drawdown:      ", round(metrics_xgb$max_drawdown * 100, 2), "%\n")
+cat("• Cumulative Return: ", round(metrics_xgb$cumulative_return, 4), "\n")
+
+#  Feature importance plot
+importance_matrix <- xgb.importance(feature_names = features, model = xgb_model)
+xgb.plot.importance(importance_matrix, top_n = 15)
+
+```
+
+
+##  MODEL COMPARISON & SELECTION
+
+```{r}
+# =============================
+# MODEL COMPARISON & SELECTION
+# =============================
+
+library(tibble)
+library(ggplot2)
+library(dplyr)
+
+#  Create Summary Table
+results <- tibble(
+  Model = c("Baseline", "Linear", "Random Forest", "SVR", "RF Tuned", "Ridge", "Lasso", "XGBoost"),
+  
+  MAPE = c(
+    mape_baseline, mape_lm, mape_rf, mape_svr,
+    mape_rf_tuned, mape_ridge, mape_lasso, mape_xgb
+  ),
+  
+  RMSE = c(
+    rmse_baseline, rmse_lm, rmse_rf, rmse_svr,
+    rmse_rf_tuned, rmse_ridge, rmse_lasso, rmse_xgb
+  ),
+  
+  Directional_Accuracy = c(
+    acc_baseline, acc_lm, acc_rf, acc_svr,
+    acc_rf_tuned, acc_ridge, acc_lasso, acc_xgb
+  ),
+  
+  Sharpe_Ratio = c(
+    NA, metrics_lm$sharpe_ratio, metrics_rf$sharpe_ratio, metrics_svr$sharpe_ratio,
+    metrics_rf_tuned$sharpe_ratio, metrics_ridge$sharpe_ratio,
+    metrics_lasso$sharpe_ratio, metrics_xgb$sharpe_ratio
+  ),
+  
+  Max_Drawdown = c(
+    NA, metrics_lm$max_drawdown, metrics_rf$max_drawdown, metrics_svr$max_drawdown,
+    metrics_rf_tuned$max_drawdown, metrics_ridge$max_drawdown,
+    metrics_lasso$max_drawdown, metrics_xgb$max_drawdown
+  )
+)
+
+print(results)
+
+```
+
+##  VISUAL COMPARISON
+
+
+##  MAPE
+
+```{r}
+ggplot(results, aes(x = Model, y = MAPE)) +
+  geom_col(fill = "steelblue") +
+  labs(title = "Model Comparison - MAPE", y = "MAPE", x = "Model") +
+  theme_minimal()
+
+```
+
+##  RMSE
+
+```{r}
+ggplot(results, aes(x = Model, y = RMSE)) +
+  geom_col(fill = "orange") +
+  labs(title = "Model Comparison - RMSE", y = "RMSE", x = "Model") +
+  theme_minimal()
+
+```
+
+##  Directional Accuracy
+
+```{r}
+ggplot(results %>% drop_na(Directional_Accuracy), aes(x = Model, y = Directional_Accuracy)) +
+  geom_col(fill = "darkgreen") +
+  labs(title = "Model Comparison - Directional Accuracy", y = "Accuracy", x = "Model") +
+  theme_minimal()
+
+```
+
+
+##  Sharpe Ratio
+
+```{r}
+ggplot(results %>% drop_na(Sharpe_Ratio), aes(x = Model, y = Sharpe_Ratio)) +
+  geom_col(fill = "purple") +
+  labs(title = "Model Comparison - Sharpe Ratio", y = "Sharpe", x = "Model") +
+  theme_minimal()
+
+```
+
+
+##  Maximum Drawdown
+
+```{r}
+ggplot(results %>% drop_na(Max_Drawdown), aes(x = Model, y = Max_Drawdown)) +
+  geom_col(fill = "red") +
+  labs(title = "Model Comparison - Max Drawdown", y = "Drawdown", x = "Model") +
+  theme_minimal()
+
+```
+
+
+
+
+
+
+# Best Model Selection
+
+## 1. For Accuracy (MAPE/RMSE)
+
+### Top 3 Models:
+1. **Lasso**  
+   - MAPE: 0.0169  
+   - RMSE: 3.0419  
+2. **Baseline**  
+   - MAPE: 0.0167  
+   - RMSE: 3.1176  
+3. **Linear**  
+   - MAPE: 0.0170  
+   - RMSE: 3.0102  
+
+### Worst Performers:
+- Random Forest, SVR, and XGBoost (extremely high MAPE/RMSE)
+
+---
+
+## 2. For Directional Accuracy (Trade Prediction)
+
+- **Best Models:**  
+  - XGBoost (0.5698)  
+  - RF Tuned (0.5259)  
+
+- **Poor Performers:**  
+  Linear, Baseline, Lasso (~0.40)
+
+---
+
+## 3. Risk-Adjusted Performance (Sharpe Ratio)
+
+- **Best Model:**  
+  Lasso (Sharpe Ratio: 0.197)  
+
+- **Others:**  
+  XGBoost and other models perform worse
+
+---
+
+## 4. Max Drawdown
+
+- **Most Models:** 0% drawdown (likely due to data scaling or short backtest periods)  
+- **Notable Exceptions:**  
+  - Linear (~0.23)  
+  - Lasso (~0.14)  
+
+---
+
+## Final Summary Table
+
+```{r summary-table, echo=FALSE}
+models <- data.frame(
+  Model = c("Lasso", "Baseline", "Linear", "XGBoost", "RF Tuned", "Random Forest", "SVR", "Ridge"),
+  MAPE = c(0.0169, 0.0167, 0.0170, 0.5136, 0.5365, 0.5364, 0.5098, 0.0969),
+  RMSE = c(3.0419, 3.1176, 3.0102, 69.4070, 72.4122, 72.5872, 73.7361, 12.4401),
+  Directional_Accuracy = c(0.3977, 0.4058, 0.4107, 0.5698, 0.5260, 0.5162, 0.4675, 0.3977),
+  Sharpe_Ratio = c(0.1972, NA, 0.1729, 0.0705, NaN, 0.0494, 0.0871, NaN),
+  Max_Drawdown = c(0.1436, NA, 0.2299, 0.0000, 0.0000, 0.0000, 0.0000, 0.0000)
+)
+
+knitr::kable(models, caption = "Model Performance Comparison", digits = 4)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

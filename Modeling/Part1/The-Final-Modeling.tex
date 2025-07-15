@@ -1,0 +1,1875 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs,array}
+\usepackage{calc} % for calculating minipage widths
+% Correct order of tables after \paragraph or \subparagraph
+\usepackage{etoolbox}
+\makeatletter
+\patchcmd\longtable{\par}{\if@noskipsec\mbox{}\fi\par}{}{}
+\makeatother
+% Allow footnotes in longtable head/foot
+\IfFileExists{footnotehyper.sty}{\usepackage{footnotehyper}}{\usepackage{footnote}}
+\makesavenoteenv{longtable}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\usepackage{bookmark}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Modeling with cleaned data},
+  pdfauthor={Team Irma, Omoniyi, Parvathi and Hyunsung},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Modeling with cleaned data}
+\author{Team Irma, Omoniyi, Parvathi and Hyunsung}
+\date{2025-07-15}
+
+\begin{document}
+\maketitle
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\#  Load Required Libraries}
+\CommentTok{\# ============================}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\FunctionTok{library}\NormalTok{(lubridate)}
+\FunctionTok{library}\NormalTok{(caret)}
+\FunctionTok{library}\NormalTok{(TTR)}
+\FunctionTok{library}\NormalTok{(Metrics)}
+\FunctionTok{library}\NormalTok{(zoo)}
+\FunctionTok{library}\NormalTok{(randomForest)}
+\FunctionTok{library}\NormalTok{(xgboost)}
+\FunctionTok{library}\NormalTok{(e1071)}
+\FunctionTok{library}\NormalTok{(tseries)}
+
+\CommentTok{\# ============================}
+\CommentTok{\# Load Dataset}
+\CommentTok{\# ============================}
+\NormalTok{nvda\_data }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{"cleaned\_nvda\_data.csv"}\NormalTok{)}
+
+\CommentTok{\# ============================}
+\CommentTok{\# ️ Ensure Date is Properly Formatted}
+\CommentTok{\# ============================}
+\NormalTok{nvda\_data }\OtherTok{\textless{}{-}}\NormalTok{ nvda\_data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{date =} \FunctionTok{as.Date}\NormalTok{(date)) }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{arrange}\NormalTok{(date)  }\CommentTok{\# Sort chronologically}
+
+\CommentTok{\# ============================}
+\CommentTok{\#  Remove Missing Values}
+\CommentTok{\# ============================}
+\NormalTok{nvda\_data }\OtherTok{\textless{}{-}}\NormalTok{ nvda\_data }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{drop\_na}\NormalTok{()}
+
+\CommentTok{\# ============================}
+\CommentTok{\#  Split into Training (80\%) and Testing (20\%)}
+\CommentTok{\# ============================}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)  }\CommentTok{\# For reproducibility}
+
+\NormalTok{n }\OtherTok{\textless{}{-}} \FunctionTok{nrow}\NormalTok{(nvda\_data)}
+\NormalTok{train\_index }\OtherTok{\textless{}{-}} \DecValTok{1}\SpecialCharTok{:}\FunctionTok{floor}\NormalTok{(}\FloatTok{0.8} \SpecialCharTok{*}\NormalTok{ n)}
+\NormalTok{test\_index }\OtherTok{\textless{}{-}}\NormalTok{ (}\FunctionTok{floor}\NormalTok{(}\FloatTok{0.8} \SpecialCharTok{*}\NormalTok{ n) }\SpecialCharTok{+} \DecValTok{1}\NormalTok{)}\SpecialCharTok{:}\NormalTok{n}
+
+\NormalTok{train\_data }\OtherTok{\textless{}{-}}\NormalTok{ nvda\_data[train\_index, ]}
+\NormalTok{test\_data  }\OtherTok{\textless{}{-}}\NormalTok{ nvda\_data[test\_index, ]}
+
+\CommentTok{\# ============================}
+\CommentTok{\#  Add log\_return for financial metrics (to test set)}
+\CommentTok{\# ============================}
+\NormalTok{test\_data }\OtherTok{\textless{}{-}}\NormalTok{ test\_data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{mutate}\NormalTok{(}\AttributeTok{log\_return =} \FunctionTok{c}\NormalTok{(}\ConstantTok{NA}\NormalTok{, }\FunctionTok{diff}\NormalTok{(}\FunctionTok{log}\NormalTok{(NVDA.Close))))}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{BASELINE MODEL}\label{baseline-model}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\#  BASELINE MODEL: Predict today\textquotesingle{}s close as yesterday\textquotesingle{}s close}
+\CommentTok{\# ============================}
+
+\CommentTok{\# Actual values from the test set}
+\NormalTok{actual }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{NVDA.Close}
+
+\CommentTok{\# Baseline prediction: yesterday\textquotesingle{}s close}
+\NormalTok{pred\_baseline }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{lag\_close\_1}
+
+\CommentTok{\# Log return for financial strategy}
+\NormalTok{log\_return }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{log\_return}
+\NormalTok{lag\_close }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{lag\_close\_1}
+
+\CommentTok{\# ============================}
+\CommentTok{\#  Evaluation Metrics}
+\CommentTok{\# ============================}
+
+\CommentTok{\# 1. MAPE (Mean Absolute Percentage Error)}
+\NormalTok{mape\_baseline }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(}\FunctionTok{abs}\NormalTok{((pred\_baseline }\SpecialCharTok{{-}}\NormalTok{ actual) }\SpecialCharTok{/}\NormalTok{ actual), }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+
+\CommentTok{\# 2. RMSE (Root Mean Squared Error)}
+\NormalTok{rmse\_baseline }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{mean}\NormalTok{((pred\_baseline }\SpecialCharTok{{-}}\NormalTok{ actual)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))}
+
+\CommentTok{\# 3. Directional Accuracy}
+\NormalTok{directional\_accuracy }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(actual, predicted) \{}
+  \FunctionTok{mean}\NormalTok{(}\FunctionTok{sign}\NormalTok{(}\FunctionTok{diff}\NormalTok{(actual)) }\SpecialCharTok{==} \FunctionTok{sign}\NormalTok{(}\FunctionTok{diff}\NormalTok{(predicted)), }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{\}}
+\NormalTok{acc\_baseline }\OtherTok{\textless{}{-}} \FunctionTok{directional\_accuracy}\NormalTok{(actual, pred\_baseline)}
+
+\CommentTok{\# 4–6. Financial Metrics: Sharpe Ratio, Max Drawdown, Cumulative Return}
+\NormalTok{calculate\_strategy\_metrics }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(predictions, lag\_close, log\_return) \{}
+\NormalTok{  strategy\_return }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(predictions }\SpecialCharTok{\textgreater{}}\NormalTok{ lag\_close, log\_return, }\DecValTok{0}\NormalTok{)}
+\NormalTok{  strategy\_cum\_return }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(}\FunctionTok{cumsum}\NormalTok{(}\FunctionTok{replace\_na}\NormalTok{(strategy\_return, }\DecValTok{0}\NormalTok{)))}
+\NormalTok{  sharpe\_ratio }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(strategy\_return, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{/} \FunctionTok{sd}\NormalTok{(strategy\_return, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  drawdown }\OtherTok{\textless{}{-}} \FunctionTok{cummax}\NormalTok{(strategy\_cum\_return) }\SpecialCharTok{{-}}\NormalTok{ strategy\_cum\_return}
+\NormalTok{  max\_drawdown }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(drawdown }\SpecialCharTok{/} \FunctionTok{cummax}\NormalTok{(strategy\_cum\_return), }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  cumulative\_return }\OtherTok{\textless{}{-}} \FunctionTok{last}\NormalTok{(strategy\_cum\_return)}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}
+    \AttributeTok{sharpe\_ratio =}\NormalTok{ sharpe\_ratio,}
+    \AttributeTok{max\_drawdown =}\NormalTok{ max\_drawdown,}
+    \AttributeTok{cumulative\_return =}\NormalTok{ cumulative\_return}
+\NormalTok{  ))}
+\NormalTok{\}}
+
+\NormalTok{metrics\_baseline }\OtherTok{\textless{}{-}} \FunctionTok{calculate\_strategy\_metrics}\NormalTok{(pred\_baseline, lag\_close, log\_return)}
+
+\CommentTok{\# ============================}
+\CommentTok{\#  Baseline Model Performance Output}
+\CommentTok{\# ============================}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{" BASELINE MODEL PERFORMANCE:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  BASELINE MODEL PERFORMANCE:
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## ----------------------------------
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• MAPE:              "}\NormalTok{, }\FunctionTok{round}\NormalTok{(mape\_baseline }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • MAPE:               1.67 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• RMSE:              "}\NormalTok{, }\FunctionTok{round}\NormalTok{(rmse\_baseline, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • RMSE:               3.1176
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Directional Acc.:  "}\NormalTok{, }\FunctionTok{round}\NormalTok{(acc\_baseline }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Directional Acc.:   40.58 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Sharpe Ratio:      "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_baseline}\SpecialCharTok{$}\NormalTok{sharpe\_ratio, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Sharpe Ratio:       NaN
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Max Drawdown:      "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_baseline}\SpecialCharTok{$}\NormalTok{max\_drawdown }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Max Drawdown:       0 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Cumulative Return: "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_baseline}\SpecialCharTok{$}\NormalTok{cumulative\_return, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Cumulative Return:  1
+\end{verbatim}
+
+\subsection{LINEAR REGRESSION MODEL}\label{linear-regression-model}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\#  LINEAR REGRESSION MODEL (REFINED)}
+\CommentTok{\# ============================}
+
+\CommentTok{\# Define features and target}
+\NormalTok{features }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}
+  \StringTok{"lag\_close\_1"}\NormalTok{, }\StringTok{"SMA20"}\NormalTok{, }\StringTok{"RSI14"}\NormalTok{, }\StringTok{"MACD"}\NormalTok{, }\StringTok{"Signal"}\NormalTok{,}
+  \StringTok{"volatility\_20"}\NormalTok{, }\StringTok{"lag\_return\_1"}\NormalTok{,}
+  \StringTok{"cpi"}\NormalTok{, }\StringTok{"fed\_funds"}\NormalTok{, }\StringTok{"treasury\_10y"}\NormalTok{, }\StringTok{"unemployment"}\NormalTok{,}
+  \StringTok{"gdp"}\NormalTok{, }\StringTok{"usd\_index"}
+\NormalTok{)}
+
+\NormalTok{target }\OtherTok{\textless{}{-}} \StringTok{"NVDA.Close"}
+
+\CommentTok{\#  Create the modeling formula}
+\NormalTok{lr\_formula }\OtherTok{\textless{}{-}} \FunctionTok{as.formula}\NormalTok{(}\FunctionTok{paste}\NormalTok{(target, }\StringTok{"\textasciitilde{}"}\NormalTok{, }\FunctionTok{paste}\NormalTok{(features, }\AttributeTok{collapse =} \StringTok{" + "}\NormalTok{)))}
+
+\CommentTok{\#  Fit linear regression model}
+\NormalTok{lm\_model }\OtherTok{\textless{}{-}} \FunctionTok{lm}\NormalTok{(}\AttributeTok{formula =}\NormalTok{ lr\_formula, }\AttributeTok{data =}\NormalTok{ train\_data)}
+
+\CommentTok{\#  Predict on test data}
+\NormalTok{pred\_lm }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(lm\_model, }\AttributeTok{newdata =}\NormalTok{ test\_data)}
+
+\CommentTok{\#  Define actual values and other inputs for metrics}
+\NormalTok{actual }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{NVDA.Close}
+\NormalTok{log\_return }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{log\_return}
+\NormalTok{lag\_close }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{lag\_close\_1}
+
+\CommentTok{\# ============================}
+\CommentTok{\#  Evaluation Metrics}
+\CommentTok{\# ============================}
+
+\CommentTok{\# 1. MAPE (Mean Absolute Percentage Error)}
+\NormalTok{mape\_lm }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(}\FunctionTok{abs}\NormalTok{((pred\_lm }\SpecialCharTok{{-}}\NormalTok{ actual) }\SpecialCharTok{/}\NormalTok{ actual), }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+
+\CommentTok{\# 2. RMSE (Root Mean Squared Error)}
+\NormalTok{rmse\_lm }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{mean}\NormalTok{((pred\_lm }\SpecialCharTok{{-}}\NormalTok{ actual)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))}
+
+\CommentTok{\# 3. Directional Accuracy}
+\NormalTok{directional\_accuracy }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(actual, predicted) \{}
+  \FunctionTok{mean}\NormalTok{(}\FunctionTok{sign}\NormalTok{(}\FunctionTok{diff}\NormalTok{(actual)) }\SpecialCharTok{==} \FunctionTok{sign}\NormalTok{(}\FunctionTok{diff}\NormalTok{(predicted)), }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{\}}
+\NormalTok{acc\_lm }\OtherTok{\textless{}{-}} \FunctionTok{directional\_accuracy}\NormalTok{(actual, pred\_lm)}
+
+\CommentTok{\# 4–6. Financial Metrics: Sharpe Ratio, Max Drawdown, Cumulative Return}
+\NormalTok{calculate\_strategy\_metrics }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(predictions, lag\_close, log\_return) \{}
+\NormalTok{  strategy\_return }\OtherTok{\textless{}{-}} \FunctionTok{ifelse}\NormalTok{(predictions }\SpecialCharTok{\textgreater{}}\NormalTok{ lag\_close, log\_return, }\DecValTok{0}\NormalTok{)}
+\NormalTok{  strategy\_cum\_return }\OtherTok{\textless{}{-}} \FunctionTok{exp}\NormalTok{(}\FunctionTok{cumsum}\NormalTok{(}\FunctionTok{replace\_na}\NormalTok{(strategy\_return, }\DecValTok{0}\NormalTok{)))}
+\NormalTok{  sharpe\_ratio }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(strategy\_return, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{) }\SpecialCharTok{/} \FunctionTok{sd}\NormalTok{(strategy\_return, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  drawdown }\OtherTok{\textless{}{-}} \FunctionTok{cummax}\NormalTok{(strategy\_cum\_return) }\SpecialCharTok{{-}}\NormalTok{ strategy\_cum\_return}
+\NormalTok{  max\_drawdown }\OtherTok{\textless{}{-}} \FunctionTok{max}\NormalTok{(drawdown }\SpecialCharTok{/} \FunctionTok{cummax}\NormalTok{(strategy\_cum\_return), }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  cumulative\_return }\OtherTok{\textless{}{-}} \FunctionTok{last}\NormalTok{(strategy\_cum\_return)}
+  \FunctionTok{return}\NormalTok{(}\FunctionTok{list}\NormalTok{(}
+    \AttributeTok{sharpe\_ratio =}\NormalTok{ sharpe\_ratio,}
+    \AttributeTok{max\_drawdown =}\NormalTok{ max\_drawdown,}
+    \AttributeTok{cumulative\_return =}\NormalTok{ cumulative\_return}
+\NormalTok{  ))}
+\NormalTok{\}}
+
+\NormalTok{metrics\_lm }\OtherTok{\textless{}{-}} \FunctionTok{calculate\_strategy\_metrics}\NormalTok{(pred\_lm, lag\_close, log\_return)}
+
+\CommentTok{\# ============================}
+\CommentTok{\#  Output Linear Regression Performance}
+\CommentTok{\# ============================}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{" LINEAR REGRESSION MODEL PERFORMANCE:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  LINEAR REGRESSION MODEL PERFORMANCE:
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## ----------------------------------------
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• MAPE:              "}\NormalTok{, }\FunctionTok{round}\NormalTok{(mape\_lm }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • MAPE:               1.7 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• RMSE:              "}\NormalTok{, }\FunctionTok{round}\NormalTok{(rmse\_lm, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • RMSE:               3.0102
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Directional Acc.:  "}\NormalTok{, }\FunctionTok{round}\NormalTok{(acc\_lm }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Directional Acc.:   41.07 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Sharpe Ratio:      "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_lm}\SpecialCharTok{$}\NormalTok{sharpe\_ratio, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Sharpe Ratio:       0.1729
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Max Drawdown:      "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_lm}\SpecialCharTok{$}\NormalTok{max\_drawdown }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Max Drawdown:       22.99 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Cumulative Return: "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_lm}\SpecialCharTok{$}\NormalTok{cumulative\_return, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Cumulative Return:  10.8838
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Optional: Uncomment to review model summary}
+\CommentTok{\# summary(lm\_model)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{RANDOM FOREST MODEL}\label{random-forest-model}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\#  RANDOM FOREST MODEL (REFINED)}
+\CommentTok{\# ============================}
+
+\CommentTok{\#  Define feature set and target}
+\NormalTok{features }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}
+  \StringTok{"lag\_close\_1"}\NormalTok{, }\StringTok{"SMA20"}\NormalTok{, }\StringTok{"RSI14"}\NormalTok{, }\StringTok{"MACD"}\NormalTok{, }\StringTok{"Signal"}\NormalTok{,}
+  \StringTok{"volatility\_20"}\NormalTok{, }\StringTok{"lag\_return\_1"}\NormalTok{,}
+  \StringTok{"cpi"}\NormalTok{, }\StringTok{"fed\_funds"}\NormalTok{, }\StringTok{"treasury\_10y"}\NormalTok{, }\StringTok{"unemployment"}\NormalTok{,}
+  \StringTok{"gdp"}\NormalTok{, }\StringTok{"usd\_index"}
+\NormalTok{)}
+\NormalTok{target }\OtherTok{\textless{}{-}} \StringTok{"NVDA.Close"}
+
+\CommentTok{\#   Construct formula}
+\NormalTok{rf\_formula }\OtherTok{\textless{}{-}} \FunctionTok{as.formula}\NormalTok{(}\FunctionTok{paste}\NormalTok{(target, }\StringTok{"\textasciitilde{}"}\NormalTok{, }\FunctionTok{paste}\NormalTok{(features, }\AttributeTok{collapse =} \StringTok{" + "}\NormalTok{)))}
+
+\CommentTok{\#  Train Random Forest model}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{42}\NormalTok{)  }\CommentTok{\# For reproducibility}
+\NormalTok{rf\_model }\OtherTok{\textless{}{-}} \FunctionTok{randomForest}\NormalTok{(}
+  \AttributeTok{formula =}\NormalTok{ rf\_formula,}
+  \AttributeTok{data =}\NormalTok{ train\_data,}
+  \AttributeTok{ntree =} \DecValTok{500}\NormalTok{,                        }\CommentTok{\# Number of trees}
+  \AttributeTok{mtry =} \FunctionTok{floor}\NormalTok{(}\FunctionTok{length}\NormalTok{(features) }\SpecialCharTok{/} \DecValTok{3}\NormalTok{),}\CommentTok{\# Features per split}
+  \AttributeTok{importance =} \ConstantTok{TRUE}                  \CommentTok{\# Track variable importance}
+\NormalTok{)}
+
+\CommentTok{\#  Predict on test data}
+\NormalTok{pred\_rf }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(rf\_model, }\AttributeTok{newdata =}\NormalTok{ test\_data)}
+
+\CommentTok{\#  Define actual values and metrics inputs}
+\NormalTok{actual }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{NVDA.Close}
+\NormalTok{log\_return }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{log\_return}
+\NormalTok{lag\_close }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{lag\_close\_1}
+
+\CommentTok{\# ============================}
+\CommentTok{\# Evaluation Metrics}
+\CommentTok{\# ============================}
+
+\CommentTok{\# 1. MAPE}
+\NormalTok{mape\_rf }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(}\FunctionTok{abs}\NormalTok{((pred\_rf }\SpecialCharTok{{-}}\NormalTok{ actual) }\SpecialCharTok{/}\NormalTok{ actual), }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+
+\CommentTok{\# 2. RMSE}
+\NormalTok{rmse\_rf }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{mean}\NormalTok{((pred\_rf }\SpecialCharTok{{-}}\NormalTok{ actual)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))}
+
+\CommentTok{\# 3. Directional Accuracy}
+\NormalTok{acc\_rf }\OtherTok{\textless{}{-}} \FunctionTok{directional\_accuracy}\NormalTok{(actual, pred\_rf)}
+
+\CommentTok{\# 4–6. Financial Metrics}
+\NormalTok{metrics\_rf }\OtherTok{\textless{}{-}} \FunctionTok{calculate\_strategy\_metrics}\NormalTok{(pred\_rf, lag\_close, log\_return)}
+
+\CommentTok{\# ============================}
+\CommentTok{\#  Output Random Forest Performance}
+\CommentTok{\# ============================}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{" RANDOM FOREST MODEL PERFORMANCE:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  RANDOM FOREST MODEL PERFORMANCE:
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## -------------------------------------
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• MAPE:              "}\NormalTok{, }\FunctionTok{round}\NormalTok{(mape\_rf }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • MAPE:               53.64 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• RMSE:              "}\NormalTok{, }\FunctionTok{round}\NormalTok{(rmse\_rf, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • RMSE:               72.5872
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Directional Acc.:  "}\NormalTok{, }\FunctionTok{round}\NormalTok{(acc\_rf }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Directional Acc.:   51.62 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Sharpe Ratio:      "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_rf}\SpecialCharTok{$}\NormalTok{sharpe\_ratio, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Sharpe Ratio:       0.0494
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Max Drawdown:      "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_rf}\SpecialCharTok{$}\NormalTok{max\_drawdown }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Max Drawdown:       0 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Cumulative Return: "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_rf}\SpecialCharTok{$}\NormalTok{cumulative\_return, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Cumulative Return:  1.0211
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Optional: Feature importance plot}
+\CommentTok{\# varImpPlot(rf\_model, main = "Random Forest Variable Importance")}
+\end{Highlighting}
+\end{Shaded}
+
+\subsection{SUPPORT VECTOR REGRESSION
+(SVR)}\label{support-vector-regression-svr}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\#  SUPPORT VECTOR REGRESSION (TUNED)}
+\CommentTok{\# ============================}
+\CommentTok{\#  Define features and target}
+\NormalTok{features }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}
+  \StringTok{"lag\_close\_1"}\NormalTok{, }\StringTok{"SMA20"}\NormalTok{, }\StringTok{"RSI14"}\NormalTok{, }\StringTok{"MACD"}\NormalTok{, }\StringTok{"Signal"}\NormalTok{,}
+  \StringTok{"volatility\_20"}\NormalTok{, }\StringTok{"lag\_return\_1"}\NormalTok{,}
+  \StringTok{"cpi"}\NormalTok{, }\StringTok{"fed\_funds"}\NormalTok{, }\StringTok{"treasury\_10y"}\NormalTok{, }\StringTok{"unemployment"}\NormalTok{,}
+  \StringTok{"gdp"}\NormalTok{, }\StringTok{"usd\_index"}
+\NormalTok{)}
+\NormalTok{target }\OtherTok{\textless{}{-}} \StringTok{"NVDA.Close"}
+
+\CommentTok{\#  Prepare training matrices}
+\NormalTok{x\_train }\OtherTok{\textless{}{-}}\NormalTok{ train\_data[, features]}
+\NormalTok{y\_train }\OtherTok{\textless{}{-}}\NormalTok{ train\_data[[target]]}
+\NormalTok{x\_test }\OtherTok{\textless{}{-}}\NormalTok{ test\_data[, features]}
+\NormalTok{y\_test }\OtherTok{\textless{}{-}}\NormalTok{ test\_data[[target]]}
+
+\CommentTok{\#  Proper SVR tuning using tune.svm — no \textquotesingle{}ranges =\textquotesingle{}}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{42}\NormalTok{)}
+\NormalTok{tuned\_svr }\OtherTok{\textless{}{-}} \FunctionTok{tune.svm}\NormalTok{(}
+  \AttributeTok{x =}\NormalTok{ x\_train,}
+  \AttributeTok{y =}\NormalTok{ y\_train,}
+  \AttributeTok{kernel =} \StringTok{"radial"}\NormalTok{,}
+  \AttributeTok{cost =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.1}\NormalTok{, }\DecValTok{1}\NormalTok{, }\DecValTok{10}\NormalTok{),}
+  \AttributeTok{gamma =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.01}\NormalTok{, }\FloatTok{0.1}\NormalTok{, }\DecValTok{1}\NormalTok{),}
+  \AttributeTok{epsilon =} \FunctionTok{c}\NormalTok{(}\FloatTok{0.1}\NormalTok{, }\FloatTok{0.2}\NormalTok{)}
+\NormalTok{)}
+
+\CommentTok{\#  Use best model}
+\NormalTok{best\_svr }\OtherTok{\textless{}{-}}\NormalTok{ tuned\_svr}\SpecialCharTok{$}\NormalTok{best.model}
+\NormalTok{pred\_svr }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(best\_svr, }\AttributeTok{newdata =}\NormalTok{ x\_test)}
+
+\CommentTok{\#  Define inputs for evaluation}
+\NormalTok{actual }\OtherTok{\textless{}{-}}\NormalTok{ y\_test}
+\NormalTok{log\_return }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{log\_return}
+\NormalTok{lag\_close }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{lag\_close\_1}
+
+\CommentTok{\# ============================}
+\CommentTok{\#  Metrics Evaluation}
+\CommentTok{\# ============================}
+
+\CommentTok{\# 1. MAPE}
+\NormalTok{mape\_svr }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(}\FunctionTok{abs}\NormalTok{((pred\_svr }\SpecialCharTok{{-}}\NormalTok{ actual) }\SpecialCharTok{/}\NormalTok{ actual), }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+
+\CommentTok{\# 2. RMSE}
+\NormalTok{rmse\_svr }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{mean}\NormalTok{((pred\_svr }\SpecialCharTok{{-}}\NormalTok{ actual)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))}
+
+\CommentTok{\# 3. Directional Accuracy}
+\NormalTok{acc\_svr }\OtherTok{\textless{}{-}} \FunctionTok{directional\_accuracy}\NormalTok{(actual, pred\_svr)}
+
+\CommentTok{\# 4–6. Financial Metrics}
+\NormalTok{metrics\_svr }\OtherTok{\textless{}{-}} \FunctionTok{calculate\_strategy\_metrics}\NormalTok{(pred\_svr, lag\_close, log\_return)}
+
+\CommentTok{\# ============================}
+\CommentTok{\# Output}
+\CommentTok{\# ============================}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{" SVR MODEL PERFORMANCE (TUNED):}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  SVR MODEL PERFORMANCE (TUNED):
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## ----------------------------------
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• MAPE:              "}\NormalTok{, }\FunctionTok{round}\NormalTok{(mape\_svr }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • MAPE:               50.98 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• RMSE:              "}\NormalTok{, }\FunctionTok{round}\NormalTok{(rmse\_svr, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • RMSE:               73.7361
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Directional Acc.:  "}\NormalTok{, }\FunctionTok{round}\NormalTok{(acc\_svr }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Directional Acc.:   46.75 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Sharpe Ratio:      "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_svr}\SpecialCharTok{$}\NormalTok{sharpe\_ratio, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Sharpe Ratio:       0.0871
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Max Drawdown:      "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_svr}\SpecialCharTok{$}\NormalTok{max\_drawdown }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Max Drawdown:       0 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Cumulative Return: "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_svr}\SpecialCharTok{$}\NormalTok{cumulative\_return, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Cumulative Return:  1.1838
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Best Cost:         "}\NormalTok{, best\_svr}\SpecialCharTok{$}\NormalTok{cost, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Best Cost:          10
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Best Gamma:        "}\NormalTok{, best\_svr}\SpecialCharTok{$}\NormalTok{gamma, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Best Gamma:         0.01
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Best Epsilon:      "}\NormalTok{, best\_svr}\SpecialCharTok{$}\NormalTok{epsilon, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Best Epsilon:       0.1
+\end{verbatim}
+
+\subsection{Tuned Random Forest Model}\label{tuned-random-forest-model}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\#  TUNED RANDOM FOREST MODEL}
+\CommentTok{\# ============================}
+
+\CommentTok{\#  Features and target}
+\NormalTok{features }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}
+  \StringTok{"lag\_close\_1"}\NormalTok{, }\StringTok{"SMA20"}\NormalTok{, }\StringTok{"RSI14"}\NormalTok{, }\StringTok{"MACD"}\NormalTok{, }\StringTok{"Signal"}\NormalTok{,}
+  \StringTok{"volatility\_20"}\NormalTok{, }\StringTok{"lag\_return\_1"}\NormalTok{,}
+  \StringTok{"cpi"}\NormalTok{, }\StringTok{"fed\_funds"}\NormalTok{, }\StringTok{"treasury\_10y"}\NormalTok{, }\StringTok{"unemployment"}\NormalTok{,}
+  \StringTok{"gdp"}\NormalTok{, }\StringTok{"usd\_index"}
+\NormalTok{)}
+\NormalTok{target }\OtherTok{\textless{}{-}} \StringTok{"NVDA.Close"}
+
+\CommentTok{\#  Define formula}
+\NormalTok{rf\_formula }\OtherTok{\textless{}{-}} \FunctionTok{as.formula}\NormalTok{(}\FunctionTok{paste}\NormalTok{(target, }\StringTok{"\textasciitilde{}"}\NormalTok{, }\FunctionTok{paste}\NormalTok{(features, }\AttributeTok{collapse =} \StringTok{" + "}\NormalTok{)))}
+
+\CommentTok{\#  Training control}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
+\NormalTok{control }\OtherTok{\textless{}{-}} \FunctionTok{trainControl}\NormalTok{(}
+  \AttributeTok{method =} \StringTok{"repeatedcv"}\NormalTok{,}
+  \AttributeTok{number =} \DecValTok{5}\NormalTok{,}
+  \AttributeTok{repeats =} \DecValTok{3}\NormalTok{,}
+  \AttributeTok{verboseIter =} \ConstantTok{TRUE}\NormalTok{,}
+  \AttributeTok{savePredictions =} \StringTok{"final"}
+\NormalTok{)}
+
+\CommentTok{\# Tuning grid}
+\NormalTok{tune\_grid }\OtherTok{\textless{}{-}} \FunctionTok{expand.grid}\NormalTok{(}
+  \AttributeTok{mtry =} \DecValTok{2}\SpecialCharTok{:}\DecValTok{6}\NormalTok{,}
+  \AttributeTok{splitrule =} \FunctionTok{c}\NormalTok{(}\StringTok{"variance"}\NormalTok{, }\StringTok{"extratrees"}\NormalTok{),}
+  \AttributeTok{min.node.size =} \FunctionTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{, }\DecValTok{3}\NormalTok{, }\DecValTok{5}\NormalTok{)}
+\NormalTok{)}
+
+\CommentTok{\# Parallel processing (optional)}
+\FunctionTok{library}\NormalTok{(doParallel)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'doParallel' was built under R version 4.4.3
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: foreach
+\end{verbatim}
+
+\begin{verbatim}
+## Warning: package 'foreach' was built under R version 4.4.3
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'foreach'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:purrr':
+## 
+##     accumulate, when
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: iterators
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: parallel
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{cl }\OtherTok{\textless{}{-}} \FunctionTok{makePSOCKcluster}\NormalTok{(}\DecValTok{4}\NormalTok{)}
+\FunctionTok{registerDoParallel}\NormalTok{(cl)}
+
+\CommentTok{\#  Train model using ranger via caret}
+\NormalTok{rf\_tuned }\OtherTok{\textless{}{-}} \FunctionTok{train}\NormalTok{(}
+  \AttributeTok{form =}\NormalTok{ rf\_formula,}
+  \AttributeTok{data =}\NormalTok{ train\_data,}
+  \AttributeTok{method =} \StringTok{"ranger"}\NormalTok{,}
+  \AttributeTok{trControl =}\NormalTok{ control,}
+  \AttributeTok{tuneGrid =}\NormalTok{ tune\_grid,}
+  \AttributeTok{importance =} \StringTok{"impurity"}\NormalTok{,}
+  \AttributeTok{num.trees =} \DecValTok{500}\NormalTok{,}
+  \AttributeTok{metric =} \StringTok{"RMSE"}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Aggregating results
+## Selecting tuning parameters
+## Fitting mtry = 4, splitrule = extratrees, min.node.size = 1 on full training set
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#  Stop parallel}
+\FunctionTok{stopCluster}\NormalTok{(cl)}
+
+\CommentTok{\#  Predict}
+\NormalTok{pred\_rf\_tuned }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(rf\_tuned, }\AttributeTok{newdata =}\NormalTok{ test\_data)}
+
+\CommentTok{\# ============================}
+\CommentTok{\# Evaluation Metrics}
+\CommentTok{\# ============================}
+
+\NormalTok{actual }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{NVDA.Close}
+\NormalTok{log\_return }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{log\_return}
+\NormalTok{lag\_close }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{lag\_close\_1}
+
+\CommentTok{\# 1. MAPE}
+\NormalTok{mape\_rf\_tuned }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(}\FunctionTok{abs}\NormalTok{((pred\_rf\_tuned }\SpecialCharTok{{-}}\NormalTok{ actual) }\SpecialCharTok{/}\NormalTok{ actual), }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+
+\CommentTok{\# 2. RMSE}
+\NormalTok{rmse\_rf\_tuned }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{mean}\NormalTok{((pred\_rf\_tuned }\SpecialCharTok{{-}}\NormalTok{ actual)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))}
+
+\CommentTok{\# 3. Directional Accuracy}
+\NormalTok{acc\_rf\_tuned }\OtherTok{\textless{}{-}} \FunctionTok{directional\_accuracy}\NormalTok{(actual, pred\_rf\_tuned)}
+
+\CommentTok{\# 4–6. Financial metrics}
+\NormalTok{metrics\_rf\_tuned }\OtherTok{\textless{}{-}} \FunctionTok{calculate\_strategy\_metrics}\NormalTok{(pred\_rf\_tuned, lag\_close, log\_return)}
+
+\CommentTok{\# ============================}
+\CommentTok{\# Output Results}
+\CommentTok{\# ============================}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{" TUNED RANDOM FOREST PERFORMANCE:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  TUNED RANDOM FOREST PERFORMANCE:
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## ----------------------------------
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• MAPE:              "}\NormalTok{, }\FunctionTok{round}\NormalTok{(mape\_rf\_tuned }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • MAPE:               53.65 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• RMSE:              "}\NormalTok{, }\FunctionTok{round}\NormalTok{(rmse\_rf\_tuned, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • RMSE:               72.4122
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Directional Acc.:  "}\NormalTok{, }\FunctionTok{round}\NormalTok{(acc\_rf\_tuned }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Directional Acc.:   52.6 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Sharpe Ratio:      "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_rf\_tuned}\SpecialCharTok{$}\NormalTok{sharpe\_ratio, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Sharpe Ratio:       NaN
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Max Drawdown:      "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_rf\_tuned}\SpecialCharTok{$}\NormalTok{max\_drawdown }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Max Drawdown:       0 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Cumulative Return: "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_rf\_tuned}\SpecialCharTok{$}\NormalTok{cumulative\_return, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Cumulative Return:  1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Best mtry:         "}\NormalTok{, rf\_tuned}\SpecialCharTok{$}\NormalTok{bestTune}\SpecialCharTok{$}\NormalTok{mtry, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Best mtry:          4
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Split Rule:        "}\NormalTok{, rf\_tuned}\SpecialCharTok{$}\NormalTok{bestTune}\SpecialCharTok{$}\NormalTok{splitrule, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Split Rule:         2
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Min Node Size:     "}\NormalTok{, rf\_tuned}\SpecialCharTok{$}\NormalTok{bestTune}\SpecialCharTok{$}\NormalTok{min.node.size, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Min Node Size:      1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Optional: Visualize tuning result}
+\FunctionTok{plot}\NormalTok{(rf\_tuned, }\AttributeTok{main =} \StringTok{"Tuned Random Forest Performance"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{The-Final-Modeling_files/figure-latex/unnamed-chunk-6-1.pdf}
+
+\subsection{RIDGE REGRESSION MODEL}\label{ridge-regression-model}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\#  RIDGE REGRESSION (OPTIMIZED)}
+\CommentTok{\# ============================}
+
+\FunctionTok{library}\NormalTok{(glmnet)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Warning: package 'glmnet' was built under R version 4.4.3
+\end{verbatim}
+
+\begin{verbatim}
+## Loading required package: Matrix
+\end{verbatim}
+
+\begin{verbatim}
+## 
+## Attaching package: 'Matrix'
+\end{verbatim}
+
+\begin{verbatim}
+## The following objects are masked from 'package:tidyr':
+## 
+##     expand, pack, unpack
+\end{verbatim}
+
+\begin{verbatim}
+## Loaded glmnet 4.1-9
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(doParallel)}
+
+\CommentTok{\# Prepare features \& target}
+\NormalTok{features }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}
+  \StringTok{"lag\_close\_1"}\NormalTok{, }\StringTok{"SMA20"}\NormalTok{, }\StringTok{"RSI14"}\NormalTok{, }\StringTok{"MACD"}\NormalTok{, }\StringTok{"Signal"}\NormalTok{,}
+  \StringTok{"volatility\_20"}\NormalTok{, }\StringTok{"lag\_return\_1"}\NormalTok{,}
+  \StringTok{"cpi"}\NormalTok{, }\StringTok{"fed\_funds"}\NormalTok{, }\StringTok{"treasury\_10y"}\NormalTok{, }\StringTok{"unemployment"}\NormalTok{,}
+  \StringTok{"gdp"}\NormalTok{, }\StringTok{"usd\_index"}
+\NormalTok{)}
+\NormalTok{target }\OtherTok{\textless{}{-}} \StringTok{"NVDA.Close"}
+
+\CommentTok{\#  Create model matrices (exclude intercept column)}
+\NormalTok{x\_train }\OtherTok{\textless{}{-}} \FunctionTok{model.matrix}\NormalTok{(}\FunctionTok{as.formula}\NormalTok{(}\FunctionTok{paste}\NormalTok{(target, }\StringTok{"\textasciitilde{}"}\NormalTok{, }\FunctionTok{paste}\NormalTok{(features, }\AttributeTok{collapse =} \StringTok{"+"}\NormalTok{))), }\AttributeTok{data =}\NormalTok{ train\_data)[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]}
+\NormalTok{y\_train }\OtherTok{\textless{}{-}}\NormalTok{ train\_data[[target]]}
+
+\NormalTok{x\_test }\OtherTok{\textless{}{-}} \FunctionTok{model.matrix}\NormalTok{(}\FunctionTok{as.formula}\NormalTok{(}\FunctionTok{paste}\NormalTok{(target, }\StringTok{"\textasciitilde{}"}\NormalTok{, }\FunctionTok{paste}\NormalTok{(features, }\AttributeTok{collapse =} \StringTok{"+"}\NormalTok{))), }\AttributeTok{data =}\NormalTok{ test\_data)[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]}
+\NormalTok{y\_test }\OtherTok{\textless{}{-}}\NormalTok{ test\_data[[target]]}
+
+\CommentTok{\#  Standardize data (important for Ridge)}
+\NormalTok{x\_train\_scaled }\OtherTok{\textless{}{-}} \FunctionTok{scale}\NormalTok{(x\_train)}
+\NormalTok{x\_test\_scaled }\OtherTok{\textless{}{-}} \FunctionTok{scale}\NormalTok{(}
+\NormalTok{  x\_test,}
+  \AttributeTok{center =} \FunctionTok{attr}\NormalTok{(x\_train\_scaled, }\StringTok{"scaled:center"}\NormalTok{),}
+  \AttributeTok{scale =} \FunctionTok{attr}\NormalTok{(x\_train\_scaled, }\StringTok{"scaled:scale"}\NormalTok{)}
+\NormalTok{)}
+
+\CommentTok{\#  Parallel backend for cross{-}validation}
+\FunctionTok{registerDoParallel}\NormalTok{(}\AttributeTok{cores =} \DecValTok{4}\NormalTok{)}
+
+\CommentTok{\#  Train Ridge Regression with 10{-}fold CV}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
+\NormalTok{ridge\_model }\OtherTok{\textless{}{-}} \FunctionTok{cv.glmnet}\NormalTok{(}
+  \AttributeTok{x =}\NormalTok{ x\_train\_scaled,}
+  \AttributeTok{y =}\NormalTok{ y\_train,}
+  \AttributeTok{alpha =} \DecValTok{0}\NormalTok{,               }\CommentTok{\# Ridge regression}
+  \AttributeTok{nfolds =} \DecValTok{10}\NormalTok{,}
+  \AttributeTok{type.measure =} \StringTok{"mse"}\NormalTok{,}
+  \AttributeTok{standardize =} \ConstantTok{FALSE}      \CommentTok{\# Already standardized manually}
+\NormalTok{)}
+
+\CommentTok{\#  Stop parallel backend}
+\FunctionTok{stopImplicitCluster}\NormalTok{()}
+
+\CommentTok{\#  Predict on test set using best lambda}
+\NormalTok{pred\_ridge }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(ridge\_model, }\AttributeTok{newx =}\NormalTok{ x\_test\_scaled, }\AttributeTok{s =} \StringTok{"lambda.min"}\NormalTok{)}
+
+\CommentTok{\#  Evaluation metrics}
+\NormalTok{log\_return }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{log\_return}
+\NormalTok{lag\_close }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{lag\_close\_1}
+\NormalTok{actual }\OtherTok{\textless{}{-}}\NormalTok{ y\_test}
+
+\NormalTok{mape\_ridge }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(}\FunctionTok{abs}\NormalTok{((pred\_ridge }\SpecialCharTok{{-}}\NormalTok{ actual) }\SpecialCharTok{/}\NormalTok{ actual), }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{rmse\_ridge }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{mean}\NormalTok{((pred\_ridge }\SpecialCharTok{{-}}\NormalTok{ actual)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))}
+\NormalTok{acc\_ridge }\OtherTok{\textless{}{-}} \FunctionTok{directional\_accuracy}\NormalTok{(actual, pred\_ridge)}
+\NormalTok{metrics\_ridge }\OtherTok{\textless{}{-}} \FunctionTok{calculate\_strategy\_metrics}\NormalTok{(pred\_ridge, lag\_close, log\_return)}
+
+\CommentTok{\#  Output results}
+\FunctionTok{cat}\NormalTok{(}\StringTok{" RIDGE REGRESSION PERFORMANCE:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  RIDGE REGRESSION PERFORMANCE:
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## ----------------------------------
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• MAPE:              "}\NormalTok{, }\FunctionTok{round}\NormalTok{(mape\_ridge }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • MAPE:               9.69 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• RMSE:              "}\NormalTok{, }\FunctionTok{round}\NormalTok{(rmse\_ridge, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • RMSE:               12.4401
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Directional Acc.:  "}\NormalTok{, }\FunctionTok{round}\NormalTok{(acc\_ridge }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Directional Acc.:   39.77 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Sharpe Ratio:      "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_ridge}\SpecialCharTok{$}\NormalTok{sharpe\_ratio, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Sharpe Ratio:       NaN
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Max Drawdown:      "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_ridge}\SpecialCharTok{$}\NormalTok{max\_drawdown }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Max Drawdown:       0 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Cumulative Return: "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_ridge}\SpecialCharTok{$}\NormalTok{cumulative\_return, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Cumulative Return:  1
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Optimal Lambda:    "}\NormalTok{, }\FunctionTok{format}\NormalTok{(ridge\_model}\SpecialCharTok{$}\NormalTok{lambda.min, }\AttributeTok{scientific =} \ConstantTok{TRUE}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Optimal Lambda:     1.102181e+00
+\end{verbatim}
+
+\subsection{LASSO REGRESSION MODEL}\label{lasso-regression-model}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\# LASSO REGRESSION (OPTIMIZED)}
+\CommentTok{\# ============================}
+
+\FunctionTok{library}\NormalTok{(glmnet)}
+\FunctionTok{library}\NormalTok{(doParallel)}
+
+\CommentTok{\#  Prepare features \& target (reuse from Ridge)}
+\NormalTok{features }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}
+  \StringTok{"lag\_close\_1"}\NormalTok{, }\StringTok{"SMA20"}\NormalTok{, }\StringTok{"RSI14"}\NormalTok{, }\StringTok{"MACD"}\NormalTok{, }\StringTok{"Signal"}\NormalTok{,}
+  \StringTok{"volatility\_20"}\NormalTok{, }\StringTok{"lag\_return\_1"}\NormalTok{,}
+  \StringTok{"cpi"}\NormalTok{, }\StringTok{"fed\_funds"}\NormalTok{, }\StringTok{"treasury\_10y"}\NormalTok{, }\StringTok{"unemployment"}\NormalTok{,}
+  \StringTok{"gdp"}\NormalTok{, }\StringTok{"usd\_index"}
+\NormalTok{)}
+\NormalTok{target }\OtherTok{\textless{}{-}} \StringTok{"NVDA.Close"}
+
+\CommentTok{\# Create model matrices (exclude intercept column)}
+\NormalTok{x\_train }\OtherTok{\textless{}{-}} \FunctionTok{model.matrix}\NormalTok{(}\FunctionTok{as.formula}\NormalTok{(}\FunctionTok{paste}\NormalTok{(target, }\StringTok{"\textasciitilde{}"}\NormalTok{, }\FunctionTok{paste}\NormalTok{(features, }\AttributeTok{collapse =} \StringTok{"+"}\NormalTok{))), }\AttributeTok{data =}\NormalTok{ train\_data)[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]}
+\NormalTok{y\_train }\OtherTok{\textless{}{-}}\NormalTok{ train\_data[[target]]}
+
+\NormalTok{x\_test }\OtherTok{\textless{}{-}} \FunctionTok{model.matrix}\NormalTok{(}\FunctionTok{as.formula}\NormalTok{(}\FunctionTok{paste}\NormalTok{(target, }\StringTok{"\textasciitilde{}"}\NormalTok{, }\FunctionTok{paste}\NormalTok{(features, }\AttributeTok{collapse =} \StringTok{"+"}\NormalTok{))), }\AttributeTok{data =}\NormalTok{ test\_data)[, }\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{]}
+\NormalTok{y\_test }\OtherTok{\textless{}{-}}\NormalTok{ test\_data[[target]]}
+
+\CommentTok{\#  Standardize data}
+\NormalTok{x\_train\_scaled }\OtherTok{\textless{}{-}} \FunctionTok{scale}\NormalTok{(x\_train)}
+\NormalTok{x\_test\_scaled }\OtherTok{\textless{}{-}} \FunctionTok{scale}\NormalTok{(}
+\NormalTok{  x\_test,}
+  \AttributeTok{center =} \FunctionTok{attr}\NormalTok{(x\_train\_scaled, }\StringTok{"scaled:center"}\NormalTok{),}
+  \AttributeTok{scale =} \FunctionTok{attr}\NormalTok{(x\_train\_scaled, }\StringTok{"scaled:scale"}\NormalTok{)}
+\NormalTok{)}
+
+\CommentTok{\#  Parallel backend for cross{-}validation}
+\FunctionTok{registerDoParallel}\NormalTok{(}\AttributeTok{cores =} \DecValTok{4}\NormalTok{)}
+
+\CommentTok{\#  Train Lasso Regression with 10{-}fold CV}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
+\NormalTok{lasso\_model }\OtherTok{\textless{}{-}} \FunctionTok{cv.glmnet}\NormalTok{(}
+  \AttributeTok{x =}\NormalTok{ x\_train\_scaled,}
+  \AttributeTok{y =}\NormalTok{ y\_train,}
+  \AttributeTok{alpha =} \DecValTok{1}\NormalTok{,               }\CommentTok{\# Lasso regression}
+  \AttributeTok{nfolds =} \DecValTok{10}\NormalTok{,}
+  \AttributeTok{type.measure =} \StringTok{"mse"}\NormalTok{,}
+  \AttributeTok{standardize =} \ConstantTok{FALSE}      \CommentTok{\# Already standardized manually}
+\NormalTok{)}
+
+\CommentTok{\#  Stop parallel backend}
+\FunctionTok{stopImplicitCluster}\NormalTok{()}
+
+\CommentTok{\#  Predict on test set using best lambda}
+\NormalTok{pred\_lasso }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(lasso\_model, }\AttributeTok{newx =}\NormalTok{ x\_test\_scaled, }\AttributeTok{s =} \StringTok{"lambda.min"}\NormalTok{)}
+
+\CommentTok{\#  Evaluation metrics}
+\NormalTok{log\_return }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{log\_return}
+\NormalTok{lag\_close }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{lag\_close\_1}
+\NormalTok{actual }\OtherTok{\textless{}{-}}\NormalTok{ y\_test}
+
+\NormalTok{mape\_lasso }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(}\FunctionTok{abs}\NormalTok{((pred\_lasso }\SpecialCharTok{{-}}\NormalTok{ actual) }\SpecialCharTok{/}\NormalTok{ actual), }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{rmse\_lasso }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{mean}\NormalTok{((pred\_lasso }\SpecialCharTok{{-}}\NormalTok{ actual)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))}
+\NormalTok{acc\_lasso }\OtherTok{\textless{}{-}} \FunctionTok{directional\_accuracy}\NormalTok{(actual, pred\_lasso)}
+\NormalTok{metrics\_lasso }\OtherTok{\textless{}{-}} \FunctionTok{calculate\_strategy\_metrics}\NormalTok{(pred\_lasso, lag\_close, log\_return)}
+
+\CommentTok{\#  Output results}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"  LASSO REGRESSION PERFORMANCE:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   LASSO REGRESSION PERFORMANCE:
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## ----------------------------------
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• MAPE:              "}\NormalTok{, }\FunctionTok{round}\NormalTok{(mape\_lasso }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • MAPE:               1.69 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• RMSE:              "}\NormalTok{, }\FunctionTok{round}\NormalTok{(rmse\_lasso, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • RMSE:               3.0419
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Directional Acc.:  "}\NormalTok{, }\FunctionTok{round}\NormalTok{(acc\_lasso }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Directional Acc.:   39.77 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Sharpe Ratio:      "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_lasso}\SpecialCharTok{$}\NormalTok{sharpe\_ratio, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Sharpe Ratio:       0.1972
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Max Drawdown:      "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_lasso}\SpecialCharTok{$}\NormalTok{max\_drawdown }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Max Drawdown:       14.36 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Cumulative Return: "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_lasso}\SpecialCharTok{$}\NormalTok{cumulative\_return, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Cumulative Return:  9.0131
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Optimal Lambda:    "}\NormalTok{, }\FunctionTok{format}\NormalTok{(lasso\_model}\SpecialCharTok{$}\NormalTok{lambda.min, }\AttributeTok{scientific =} \ConstantTok{TRUE}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Optimal Lambda:     1.79628e-02
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Optional: Non{-}zero coefficients}
+\NormalTok{nonzero\_coefs }\OtherTok{\textless{}{-}} \FunctionTok{coef}\NormalTok{(lasso\_model, }\AttributeTok{s =} \StringTok{"lambda.min"}\NormalTok{)}
+\NormalTok{nonzero\_coefs\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{as.matrix}\NormalTok{(nonzero\_coefs)  }\CommentTok{\# Convert to regular matrix}
+\NormalTok{nonzero\_coefs\_filtered }\OtherTok{\textless{}{-}}\NormalTok{ nonzero\_coefs\_matrix[nonzero\_coefs\_matrix }\SpecialCharTok{!=} \DecValTok{0}\NormalTok{, , drop }\OtherTok{=} \ConstantTok{FALSE}\NormalTok{]}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{🔍 Non{-}zero Coefficients:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## 🔍 Non-zero Coefficients:
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{print}\NormalTok{(nonzero\_coefs\_filtered)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                         s0
+## (Intercept)   13.380836126
+## lag_close_1   10.343694692
+## SMA20          0.650317292
+## RSI14          0.208086656
+## Signal        -0.079947857
+## volatility_20  0.009669591
+## lag_return_1  -0.033298346
+## cpi            0.024871171
+## fed_funds      0.004925757
+\end{verbatim}
+
+\subsection{XGBoost Model}\label{xgboost-model}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# ============================}
+\CommentTok{\# XGBOOST REGRESSION (OPTIMIZED)}
+\CommentTok{\# ============================}
+
+\FunctionTok{library}\NormalTok{(xgboost)}
+
+\CommentTok{\#  Prepare features \& target (same features as before)}
+\NormalTok{features }\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}
+  \StringTok{"lag\_close\_1"}\NormalTok{, }\StringTok{"SMA20"}\NormalTok{, }\StringTok{"RSI14"}\NormalTok{, }\StringTok{"MACD"}\NormalTok{, }\StringTok{"Signal"}\NormalTok{,}
+  \StringTok{"volatility\_20"}\NormalTok{, }\StringTok{"lag\_return\_1"}\NormalTok{,}
+  \StringTok{"cpi"}\NormalTok{, }\StringTok{"fed\_funds"}\NormalTok{, }\StringTok{"treasury\_10y"}\NormalTok{, }\StringTok{"unemployment"}\NormalTok{,}
+  \StringTok{"gdp"}\NormalTok{, }\StringTok{"usd\_index"}
+\NormalTok{)}
+\NormalTok{target }\OtherTok{\textless{}{-}} \StringTok{"NVDA.Close"}
+
+\CommentTok{\#  Create matrices for XGBoost (numeric matrix)}
+\NormalTok{x\_train }\OtherTok{\textless{}{-}} \FunctionTok{as.matrix}\NormalTok{(train\_data[, features])}
+\NormalTok{y\_train }\OtherTok{\textless{}{-}}\NormalTok{ train\_data[[target]]}
+
+\NormalTok{x\_test }\OtherTok{\textless{}{-}} \FunctionTok{as.matrix}\NormalTok{(test\_data[, features])}
+\NormalTok{y\_test }\OtherTok{\textless{}{-}}\NormalTok{ test\_data[[target]]}
+
+\CommentTok{\#  Create DMatrix objects (optimized xgboost format)}
+\NormalTok{dtrain }\OtherTok{\textless{}{-}} \FunctionTok{xgb.DMatrix}\NormalTok{(}\AttributeTok{data =}\NormalTok{ x\_train, }\AttributeTok{label =}\NormalTok{ y\_train)}
+\NormalTok{dtest }\OtherTok{\textless{}{-}} \FunctionTok{xgb.DMatrix}\NormalTok{(}\AttributeTok{data =}\NormalTok{ x\_test)}
+
+\CommentTok{\# Set XGBoost parameters}
+\NormalTok{params }\OtherTok{\textless{}{-}} \FunctionTok{list}\NormalTok{(}
+  \AttributeTok{objective =} \StringTok{"reg:squarederror"}\NormalTok{,}
+  \AttributeTok{eta =} \FloatTok{0.1}\NormalTok{,}
+  \AttributeTok{max\_depth =} \DecValTok{6}\NormalTok{,}
+  \AttributeTok{min\_child\_weight =} \DecValTok{1}\NormalTok{,}
+  \AttributeTok{subsample =} \FloatTok{0.8}\NormalTok{,}
+  \AttributeTok{colsample\_bytree =} \FloatTok{0.8}
+\NormalTok{)}
+
+\CommentTok{\#  Train model with early stopping}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
+\NormalTok{xgb\_model }\OtherTok{\textless{}{-}} \FunctionTok{xgb.train}\NormalTok{(}
+  \AttributeTok{params =}\NormalTok{ params,}
+  \AttributeTok{data =}\NormalTok{ dtrain,}
+  \AttributeTok{nrounds =} \DecValTok{1000}\NormalTok{,}
+  \AttributeTok{watchlist =} \FunctionTok{list}\NormalTok{(}\AttributeTok{train =}\NormalTok{ dtrain),}
+  \AttributeTok{early\_stopping\_rounds =} \DecValTok{20}\NormalTok{,}
+  \AttributeTok{print\_every\_n =} \DecValTok{50}\NormalTok{,}
+  \AttributeTok{maximize =} \ConstantTok{FALSE}\NormalTok{,}
+  \AttributeTok{verbose =} \DecValTok{1}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1]  train-rmse:15.283243 
+## Will train until train_rmse hasn't improved in 20 rounds.
+## 
+## [51] train-rmse:0.212149 
+## [101]    train-rmse:0.107188 
+## [151]    train-rmse:0.073775 
+## [201]    train-rmse:0.054407 
+## [251]    train-rmse:0.041680 
+## [301]    train-rmse:0.032680 
+## [351]    train-rmse:0.026138 
+## [401]    train-rmse:0.021644 
+## [451]    train-rmse:0.017878 
+## [501]    train-rmse:0.015038 
+## [551]    train-rmse:0.012691 
+## [601]    train-rmse:0.010746 
+## [651]    train-rmse:0.009134 
+## [701]    train-rmse:0.007848 
+## [751]    train-rmse:0.006789 
+## [801]    train-rmse:0.005896 
+## [851]    train-rmse:0.005157 
+## [901]    train-rmse:0.004467 
+## [951]    train-rmse:0.003917 
+## [1000]   train-rmse:0.003471
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#  Predict on test set}
+\NormalTok{pred\_xgb }\OtherTok{\textless{}{-}} \FunctionTok{predict}\NormalTok{(xgb\_model, dtest)}
+
+\CommentTok{\#  Evaluation metrics}
+\NormalTok{log\_return }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{log\_return}
+\NormalTok{lag\_close }\OtherTok{\textless{}{-}}\NormalTok{ test\_data}\SpecialCharTok{$}\NormalTok{lag\_close\_1}
+\NormalTok{actual }\OtherTok{\textless{}{-}}\NormalTok{ y\_test}
+
+\NormalTok{mape\_xgb }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(}\FunctionTok{abs}\NormalTok{((pred\_xgb }\SpecialCharTok{{-}}\NormalTok{ actual) }\SpecialCharTok{/}\NormalTok{ actual), }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{rmse\_xgb }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(}\FunctionTok{mean}\NormalTok{((pred\_xgb }\SpecialCharTok{{-}}\NormalTok{ actual)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{, }\AttributeTok{na.rm =} \ConstantTok{TRUE}\NormalTok{))}
+\NormalTok{acc\_xgb }\OtherTok{\textless{}{-}} \FunctionTok{directional\_accuracy}\NormalTok{(actual, pred\_xgb)}
+\NormalTok{metrics\_xgb }\OtherTok{\textless{}{-}} \FunctionTok{calculate\_strategy\_metrics}\NormalTok{(pred\_xgb, lag\_close, log\_return)}
+
+\CommentTok{\#  Output results}
+\FunctionTok{cat}\NormalTok{(}\StringTok{"🎯 XGBOOST PERFORMANCE:}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 🎯 XGBOOST PERFORMANCE:
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## ---------------------------
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• MAPE:              "}\NormalTok{, }\FunctionTok{round}\NormalTok{(mape\_xgb }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • MAPE:               51.36 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• RMSE:              "}\NormalTok{, }\FunctionTok{round}\NormalTok{(rmse\_xgb, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • RMSE:               69.407
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Directional Acc.:  "}\NormalTok{, }\FunctionTok{round}\NormalTok{(acc\_xgb }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Directional Acc.:   56.98 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Sharpe Ratio:      "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_xgb}\SpecialCharTok{$}\NormalTok{sharpe\_ratio, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Sharpe Ratio:       0.0705
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Max Drawdown:      "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_xgb}\SpecialCharTok{$}\NormalTok{max\_drawdown }\SpecialCharTok{*} \DecValTok{100}\NormalTok{, }\DecValTok{2}\NormalTok{), }\StringTok{"\%}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Max Drawdown:       0 %
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"• Cumulative Return: "}\NormalTok{, }\FunctionTok{round}\NormalTok{(metrics\_xgb}\SpecialCharTok{$}\NormalTok{cumulative\_return, }\DecValTok{4}\NormalTok{), }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## • Cumulative Return:  1.0654
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\#  Feature importance plot}
+\NormalTok{importance\_matrix }\OtherTok{\textless{}{-}} \FunctionTok{xgb.importance}\NormalTok{(}\AttributeTok{feature\_names =}\NormalTok{ features, }\AttributeTok{model =}\NormalTok{ xgb\_model)}
+\FunctionTok{xgb.plot.importance}\NormalTok{(importance\_matrix, }\AttributeTok{top\_n =} \DecValTok{15}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{The-Final-Modeling_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+\subsection{MODEL COMPARISON \&
+SELECTION}\label{model-comparison-selection}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# =============================}
+\CommentTok{\# MODEL COMPARISON \& SELECTION}
+\CommentTok{\# =============================}
+
+\FunctionTok{library}\NormalTok{(tibble)}
+\FunctionTok{library}\NormalTok{(ggplot2)}
+\FunctionTok{library}\NormalTok{(dplyr)}
+
+\CommentTok{\#  Create Summary Table}
+\NormalTok{results }\OtherTok{\textless{}{-}} \FunctionTok{tibble}\NormalTok{(}
+  \AttributeTok{Model =} \FunctionTok{c}\NormalTok{(}\StringTok{"Baseline"}\NormalTok{, }\StringTok{"Linear"}\NormalTok{, }\StringTok{"Random Forest"}\NormalTok{, }\StringTok{"SVR"}\NormalTok{, }\StringTok{"RF Tuned"}\NormalTok{, }\StringTok{"Ridge"}\NormalTok{, }\StringTok{"Lasso"}\NormalTok{, }\StringTok{"XGBoost"}\NormalTok{),}
+  
+  \AttributeTok{MAPE =} \FunctionTok{c}\NormalTok{(}
+\NormalTok{    mape\_baseline, mape\_lm, mape\_rf, mape\_svr,}
+\NormalTok{    mape\_rf\_tuned, mape\_ridge, mape\_lasso, mape\_xgb}
+\NormalTok{  ),}
+  
+  \AttributeTok{RMSE =} \FunctionTok{c}\NormalTok{(}
+\NormalTok{    rmse\_baseline, rmse\_lm, rmse\_rf, rmse\_svr,}
+\NormalTok{    rmse\_rf\_tuned, rmse\_ridge, rmse\_lasso, rmse\_xgb}
+\NormalTok{  ),}
+  
+  \AttributeTok{Directional\_Accuracy =} \FunctionTok{c}\NormalTok{(}
+\NormalTok{    acc\_baseline, acc\_lm, acc\_rf, acc\_svr,}
+\NormalTok{    acc\_rf\_tuned, acc\_ridge, acc\_lasso, acc\_xgb}
+\NormalTok{  ),}
+  
+  \AttributeTok{Sharpe\_Ratio =} \FunctionTok{c}\NormalTok{(}
+    \ConstantTok{NA}\NormalTok{, metrics\_lm}\SpecialCharTok{$}\NormalTok{sharpe\_ratio, metrics\_rf}\SpecialCharTok{$}\NormalTok{sharpe\_ratio, metrics\_svr}\SpecialCharTok{$}\NormalTok{sharpe\_ratio,}
+\NormalTok{    metrics\_rf\_tuned}\SpecialCharTok{$}\NormalTok{sharpe\_ratio, metrics\_ridge}\SpecialCharTok{$}\NormalTok{sharpe\_ratio,}
+\NormalTok{    metrics\_lasso}\SpecialCharTok{$}\NormalTok{sharpe\_ratio, metrics\_xgb}\SpecialCharTok{$}\NormalTok{sharpe\_ratio}
+\NormalTok{  ),}
+  
+  \AttributeTok{Max\_Drawdown =} \FunctionTok{c}\NormalTok{(}
+    \ConstantTok{NA}\NormalTok{, metrics\_lm}\SpecialCharTok{$}\NormalTok{max\_drawdown, metrics\_rf}\SpecialCharTok{$}\NormalTok{max\_drawdown, metrics\_svr}\SpecialCharTok{$}\NormalTok{max\_drawdown,}
+\NormalTok{    metrics\_rf\_tuned}\SpecialCharTok{$}\NormalTok{max\_drawdown, metrics\_ridge}\SpecialCharTok{$}\NormalTok{max\_drawdown,}
+\NormalTok{    metrics\_lasso}\SpecialCharTok{$}\NormalTok{max\_drawdown, metrics\_xgb}\SpecialCharTok{$}\NormalTok{max\_drawdown}
+\NormalTok{  )}
+\NormalTok{)}
+
+\FunctionTok{print}\NormalTok{(results)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 8 x 6
+##   Model           MAPE  RMSE Directional_Accuracy Sharpe_Ratio Max_Drawdown
+##   <chr>          <dbl> <dbl>                <dbl>        <dbl>        <dbl>
+## 1 Baseline      0.0167  3.12                0.406      NA            NA    
+## 2 Linear        0.0170  3.01                0.411       0.173         0.230
+## 3 Random Forest 0.536  72.6                 0.516       0.0494        0    
+## 4 SVR           0.510  73.7                 0.468       0.0871        0    
+## 5 RF Tuned      0.536  72.4                 0.526     NaN             0    
+## 6 Ridge         0.0969 12.4                 0.398     NaN             0    
+## 7 Lasso         0.0169  3.04                0.398       0.197         0.144
+## 8 XGBoost       0.514  69.4                 0.570       0.0705        0
+\end{verbatim}
+
+\subsection{VISUAL COMPARISON}\label{visual-comparison}
+
+\subsection{MAPE}\label{mape}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(results, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Model, }\AttributeTok{y =}\NormalTok{ MAPE)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_col}\NormalTok{(}\AttributeTok{fill =} \StringTok{"steelblue"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Model Comparison {-} MAPE"}\NormalTok{, }\AttributeTok{y =} \StringTok{"MAPE"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Model"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{The-Final-Modeling_files/figure-latex/unnamed-chunk-11-1.pdf}
+
+\subsection{RMSE}\label{rmse}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(results, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Model, }\AttributeTok{y =}\NormalTok{ RMSE)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_col}\NormalTok{(}\AttributeTok{fill =} \StringTok{"orange"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Model Comparison {-} RMSE"}\NormalTok{, }\AttributeTok{y =} \StringTok{"RMSE"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Model"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{The-Final-Modeling_files/figure-latex/unnamed-chunk-12-1.pdf}
+
+\subsection{Directional Accuracy}\label{directional-accuracy}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(results }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{drop\_na}\NormalTok{(Directional\_Accuracy), }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Model, }\AttributeTok{y =}\NormalTok{ Directional\_Accuracy)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_col}\NormalTok{(}\AttributeTok{fill =} \StringTok{"darkgreen"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Model Comparison {-} Directional Accuracy"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Accuracy"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Model"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{The-Final-Modeling_files/figure-latex/unnamed-chunk-13-1.pdf}
+
+\subsection{Sharpe Ratio}\label{sharpe-ratio}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(results }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{drop\_na}\NormalTok{(Sharpe\_Ratio), }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Model, }\AttributeTok{y =}\NormalTok{ Sharpe\_Ratio)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_col}\NormalTok{(}\AttributeTok{fill =} \StringTok{"purple"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Model Comparison {-} Sharpe Ratio"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Sharpe"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Model"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{The-Final-Modeling_files/figure-latex/unnamed-chunk-14-1.pdf}
+
+\subsection{Maximum Drawdown}\label{maximum-drawdown}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(results }\SpecialCharTok{\%\textgreater{}\%} \FunctionTok{drop\_na}\NormalTok{(Max\_Drawdown), }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Model, }\AttributeTok{y =}\NormalTok{ Max\_Drawdown)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_col}\NormalTok{(}\AttributeTok{fill =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Model Comparison {-} Max Drawdown"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Drawdown"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Model"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{The-Final-Modeling_files/figure-latex/unnamed-chunk-15-1.pdf}
+
+\section{Best Model Selection}\label{best-model-selection}
+
+\subsection{1. For Accuracy (MAPE/RMSE)}\label{for-accuracy-mapermse}
+
+\subsubsection{Top 3 Models:}\label{top-3-models}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\tightlist
+\item
+  \textbf{Lasso}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    MAPE: 0.0169\\
+  \item
+    RMSE: 3.0419\\
+  \end{itemize}
+\item
+  \textbf{Baseline}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    MAPE: 0.0167\\
+  \item
+    RMSE: 3.1176\\
+  \end{itemize}
+\item
+  \textbf{Linear}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    MAPE: 0.0170\\
+  \item
+    RMSE: 3.0102
+  \end{itemize}
+\end{enumerate}
+
+\subsubsection{Worst Performers:}\label{worst-performers}
+
+\begin{itemize}
+\tightlist
+\item
+  Random Forest, SVR, and XGBoost (extremely high MAPE/RMSE)
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{2. For Directional Accuracy (Trade
+Prediction)}\label{for-directional-accuracy-trade-prediction}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Best Models:}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    XGBoost (0.5698)\\
+  \item
+    RF Tuned (0.5259)
+  \end{itemize}
+\item
+  \textbf{Poor Performers:}\\
+  Linear, Baseline, Lasso (\textasciitilde0.40)
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{3. Risk-Adjusted Performance (Sharpe
+Ratio)}\label{risk-adjusted-performance-sharpe-ratio}
+
+\begin{itemize}
+\item
+  \textbf{Best Model:}\\
+  Lasso (Sharpe Ratio: 0.197)
+\item
+  \textbf{Others:}\\
+  XGBoost and other models perform worse
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{4. Max Drawdown}\label{max-drawdown}
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Most Models:} 0\% drawdown (likely due to data scaling or
+  short backtest periods)\\
+\item
+  \textbf{Notable Exceptions:}
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Linear (\textasciitilde0.23)\\
+  \item
+    Lasso (\textasciitilde0.14)
+  \end{itemize}
+\end{itemize}
+
+\begin{center}\rule{0.5\linewidth}{0.5pt}\end{center}
+
+\subsection{Final Summary Table}\label{final-summary-table}
+
+\begin{longtable}[]{@{}
+  >{\raggedright\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1842}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.0921}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1053}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.2763}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1711}}
+  >{\raggedleft\arraybackslash}p{(\columnwidth - 10\tabcolsep) * \real{0.1711}}@{}}
+\caption{Model Performance Comparison}\tabularnewline
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Model
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+MAPE
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+RMSE
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Directional\_Accuracy
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Sharpe\_Ratio
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Max\_Drawdown
+\end{minipage} \\
+\midrule\noalign{}
+\endfirsthead
+\toprule\noalign{}
+\begin{minipage}[b]{\linewidth}\raggedright
+Model
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+MAPE
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+RMSE
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Directional\_Accuracy
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Sharpe\_Ratio
+\end{minipage} & \begin{minipage}[b]{\linewidth}\raggedleft
+Max\_Drawdown
+\end{minipage} \\
+\midrule\noalign{}
+\endhead
+\bottomrule\noalign{}
+\endlastfoot
+Lasso & 0.0169 & 3.0419 & 0.3977 & 0.1972 & 0.1436 \\
+Baseline & 0.0167 & 3.1176 & 0.4058 & NA & NA \\
+Linear & 0.0170 & 3.0102 & 0.4107 & 0.1729 & 0.2299 \\
+XGBoost & 0.5136 & 69.4070 & 0.5698 & 0.0705 & 0.0000 \\
+RF Tuned & 0.5365 & 72.4122 & 0.5260 & NaN & 0.0000 \\
+Random Forest & 0.5364 & 72.5872 & 0.5162 & 0.0494 & 0.0000 \\
+SVR & 0.5098 & 73.7361 & 0.4675 & 0.0871 & 0.0000 \\
+Ridge & 0.0969 & 12.4401 & 0.3977 & NaN & 0.0000 \\
+\end{longtable}
+
+\end{document}
