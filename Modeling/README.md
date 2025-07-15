@@ -154,4 +154,3 @@ After each model runs, the performance numbers will print in R. All results are 
 * **Walk-Forward Validation:** This project uses "walk-forward validation." This is a better way to test trading strategies. It trains the model again and again using more and more past data.
 * **Needed Tools:** Make sure all R packages listed at the top of `00_model_setup.R` (common ones) and in each model script (for that model) are installed. Install any missing ones using `install.packages("package_name")`.
 * **Restart R:** Always restart R (`q()` then `n`) when doing major runs or if something goes wrong. This helps clear old data and avoid problems.
-* **Computer Power:** Running models, especially complex ones or with much data, needs good computer memory and speed.
