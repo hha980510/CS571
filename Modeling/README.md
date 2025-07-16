@@ -108,3 +108,40 @@ To use these functions for evaluating your trading strategy, simply **source the
 ```R
 source("Modeling/04_strategy_evaluation_utils.R")
 ```
+# 📈 Linear Regression Modeling
+
+This module focuses on building and evaluating **Linear Regression** models for **NVIDIA (NVDA) stock price prediction**. We're targeting different time horizons:
+
+* **1-week ahead price** (`Target_5_Price`)
+* **2-weeks ahead price** (`Target_10_Price`)
+* **1-month ahead price** (`Target_21_Price`)
+
+## Feature Sets Evaluated
+
+We experiment with three distinct sets of features to see their impact on prediction accuracy:
+
+* **Technical**: Models trained using only **technical indicators** (e.g., Moving Averages (MA), Relative Strength Index (RSI)).
+* **Economic**: Models trained using only **macroeconomic factors** (e.g., Consumer Price Index (CPI), Federal Funds Rate (FEDFUNDS)).
+* **All**: Models incorporating **both technical and economic indicators**.
+
+## Evaluation Metrics
+
+Each model's performance is comprehensively assessed using two categories of metrics:
+
+### Regression Metrics
+These quantify the model's predictive accuracy:
+* **RMSE** (Root Mean Squared Error)
+* **MAE** (Mean Absolute Error)
+* **MAPE** (Mean Absolute Percentage Error)
+* **R²** (Coefficient of Determination)
+
+### Strategy Metrics
+These evaluate the practical financial viability of a trading strategy based on the model's predictions:
+* **Cumulative Return**
+* **Sharpe Ratio**
+* **Max Drawdown**
+
+## Output and Results
+
+* **Prediction plots** and detailed **CSV logs** of predictions are saved to the `/Results/Linear_Regression/` directory.
+* All model evaluation results are automatically appended to a centralized file: `Results/all_model_metrics.csv`. This provides a single, easy-to-compare overview of all model performances.

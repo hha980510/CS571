@@ -36,3 +36,25 @@ calculate_max_drawdown <- function(returns) {
   max_dd <- max(drawdown, na.rm = TRUE)
   return(max_dd)
 }
+
+evaluate_strategy_metrics <- function(predictions, actual_prices) {
+  # Signal: buy if prediction > current actual price
+  position <- ifelse(predictions > actual_prices, 1, 0)
+
+  # Daily returns (based on actual price movement)
+  returns <- c(0, diff(actual_prices) / head(actual_prices, -1))
+
+  # Strategy returns (only earn returns if in the market)
+  strategy_returns <- position * returns
+
+  # Calculate all strategy metrics
+  cumulative_return <- calculate_cumulative_return(strategy_returns)
+  sharpe_ratio <- calculate_sharpe_ratio(strategy_returns)
+  max_drawdown <- calculate_max_drawdown(strategy_returns)
+
+  return(list(
+    Cumulative_Return = cumulative_return,
+    Sharpe_Ratio = sharpe_ratio,
+    Max_Drawdown = max_drawdown
+  ))
+}

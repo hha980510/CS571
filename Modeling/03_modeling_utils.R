@@ -1,90 +1,86 @@
 # ============================================
 # File: Modeling/03_modeling_utils.R
-# Purpose: Utility functions for model evaluation and result saving
+# Purpose: Utility functions for regression evaluation and saving results
 # ============================================
 
-library(dplyr)
-library(ggplot2)
-library(readr)
-
-# ============================
-# Regression Evaluation Metrics
-# ============================
+# ----------------------------
+# Evaluate regression performance
+# ----------------------------
 evaluate_regression_model <- function(actual, predicted) {
   rmse <- sqrt(mean((actual - predicted)^2, na.rm = TRUE))
-  mae <- mean(abs(actual - predicted), na.rm = TRUE)
-  mape <- mean(abs((actual - predicted) / actual), na.rm = TRUE) * 100
-  r2 <- 1 - sum((actual - predicted)^2, na.rm = TRUE) / sum((actual - mean(actual, na.rm = TRUE))^2, na.rm = TRUE)
+  mae  <- mean(abs(actual - predicted), na.rm = TRUE)
+  mape <- mean(abs((actual - predicted) / actual), na.rm = TRUE)
+  r2   <- 1 - sum((actual - predicted)^2, na.rm = TRUE) / sum((actual - mean(actual, na.rm = TRUE))^2, na.rm = TRUE)
 
-  metrics <- list(
-    RMSE = rmse,
-    MAE = mae,
-    MAPE = mape,
-    R2 = r2
-  )
-
-  return(metrics)
+  return(list(RMSE = rmse, MAE = mae, MAPE = mape, R2 = r2))
 }
 
-# ============================
-# Directional Accuracy
-# ============================
-directional_accuracy <- function(actual, predicted) {
-  correct <- sign(diff(predicted)) == sign(diff(actual))
-  return(mean(correct, na.rm = TRUE))
+# ----------------------------
+# Save evaluation metrics to a .txt file
+# ----------------------------
+save_metrics <- function(metrics_list, filepath) {
+  metrics_df <- as.data.frame(t(unlist(metrics_list)))
+  write.table(metrics_df, file = filepath, row.names = FALSE, sep = ",", quote = FALSE)
 }
 
-# ============================
-# Baseline RMSE (no-change model)
-# ============================
-baseline_rmse <- function(actual) {
-  baseline_pred <- dplyr::lag(actual)  # yesterday's price as today's prediction
-  sqrt(mean((actual - baseline_pred)^2, na.rm = TRUE))
-}
-
-rmse_improvement <- function(actual, predicted) {
-  baseline <- baseline_rmse(actual)
-  model_rmse <- sqrt(mean((actual - predicted)^2, na.rm = TRUE))
-  improvement <- 100 * (baseline - model_rmse) / baseline
-  return(improvement)
-}
-
-# ============================
-# Save Metrics to File
-# ============================
-save_metrics <- function(metrics, filepath) {
-  lines <- sapply(names(metrics), function(name) paste(name, ":", round(metrics[[name]], 4)))
-  writeLines(lines, filepath)
-}
-
-# ============================
-# Save Predictions to CSV
-# ============================
+# ----------------------------
+# Save predictions to CSV
+# ----------------------------
 save_predictions <- function(actual, predicted, dates, filepath) {
-  df <- data.frame(
-    Date = dates,
-    Actual_Price = actual,
-    Predicted_Price = predicted
-  )
-  write_csv(df, filepath)
+  df <- data.frame(Date = dates, Actual = actual, Predicted = predicted)
+  write.csv(df, file = filepath, row.names = FALSE)
 }
 
-# ============================
-# Plot Predicted vs Actual Prices
-# ============================
-plot_predictions <- function(actual, predicted, dates, title = "Predicted vs Actual Prices") {
-  df <- data.frame(
-    Date = as.Date(dates),
-    Actual = actual,
-    Predicted = predicted
+# ----------------------------
+# Plot predictions vs actual values
+# ----------------------------
+plot_predictions <- function(actual, predicted, dates, title = "Predicted vs Actual") {
+  library(ggplot2)
+  df <- data.frame(Date = as.Date(dates), Actual = actual, Predicted = predicted)
+
+  ggplot(df, aes(x = Date)) +
+    geom_line(aes(y = Actual), color = "blue", linewidth = 1) +
+    geom_line(aes(y = Predicted), color = "red", linewidth = 1, linetype = "dashed") +
+    labs(title = title, y = "Price", x = "Date") +
+    theme_minimal()
+}
+
+# ----------------------------
+# Append model results to a central CSV file
+# ----------------------------
+append_model_results <- function(model_name, target_var, metrics, strategy_metrics, filepath) {
+  new_row <- data.frame(
+    Model = model_name,
+    Target = target_var,
+    RMSE = metrics$RMSE,
+    MAE = metrics$MAE,
+    MAPE = metrics$MAPE,
+    R2 = metrics$R2,
+    Cumulative_Return = strategy_metrics$Cumulative_Return,
+    Sharpe_Ratio = strategy_metrics$Sharpe_Ratio,
+    Max_Drawdown = strategy_metrics$Max_Drawdown
   )
 
-  p <- ggplot(df, aes(x = Date)) +
-    geom_line(aes(y = Actual, color = "Actual")) +
-    geom_line(aes(y = Predicted, color = "Predicted")) +
-    labs(title = title, y = "Price", x = "Date") +
-    scale_color_manual(values = c("Actual" = "blue", "Predicted" = "red")) +
-    theme_minimal()
+  # Safe file read
+  existing_data <- tryCatch({
+    read.csv(filepath)
+  }, error = function(e) {
+    message("⚠️ File exists but is unreadable or empty. Creating new.")
+    data.frame()
+  })
 
-  return(p)
+  # Check for duplicates
+  if (nrow(existing_data) > 0 && any(existing_data$Model == model_name & existing_data$Target == target_var)) {
+    message("⚠️ Skipping duplicate entry: ", model_name, " - ", target_var)
+    return(invisible(NULL))
+  }
+
+  updated_data <- if (nrow(existing_data) > 0) {
+    rbind(existing_data, new_row)
+  } else {
+    new_row
+  }
+
+  write.csv(updated_data, filepath, row.names = FALSE)
+  message("✅ Appended: ", model_name, " - ", target_var)
 }
