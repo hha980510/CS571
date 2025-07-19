@@ -4,6 +4,11 @@
 # ============================================
 
 # ----------------------------
+# Null coalescing operator for safe defaults
+# ----------------------------
+`%||%` <- function(x, y) if (!is.null(x)) x else y
+
+# ----------------------------
 # Evaluate regression performance
 # ----------------------------
 evaluate_regression_model <- function(actual, predicted) {
@@ -20,6 +25,7 @@ evaluate_regression_model <- function(actual, predicted) {
 # ----------------------------
 save_metrics <- function(metrics_list, filepath) {
   metrics_df <- as.data.frame(t(unlist(metrics_list)))
+  dir.create(dirname(filepath), showWarnings = FALSE, recursive = TRUE)
   write.table(metrics_df, file = filepath, row.names = FALSE, sep = ",", quote = FALSE)
 }
 
@@ -28,6 +34,7 @@ save_metrics <- function(metrics_list, filepath) {
 # ----------------------------
 save_predictions <- function(actual, predicted, dates, filepath) {
   df <- data.frame(Date = dates, Actual = actual, Predicted = predicted)
+  dir.create(dirname(filepath), showWarnings = FALSE, recursive = TRUE)
   write.csv(df, file = filepath, row.names = FALSE)
 }
 
@@ -35,6 +42,10 @@ save_predictions <- function(actual, predicted, dates, filepath) {
 # Plot predictions vs actual values
 # ----------------------------
 plot_predictions <- function(actual, predicted, dates, title = "Predicted vs Actual") {
+  if (!requireNamespace("ggplot2", quietly = TRUE)) {
+    stop("Package 'ggplot2' is required but not installed.")
+  }
+
   library(ggplot2)
   df <- data.frame(Date = as.Date(dates), Actual = actual, Predicted = predicted)
 
@@ -52,20 +63,21 @@ append_model_results <- function(model_name, target_var, metrics, strategy_metri
   new_row <- data.frame(
     Model = model_name,
     Target = target_var,
-    RMSE = metrics$RMSE,
-    MAE = metrics$MAE,
-    MAPE = metrics$MAPE,
-    R2 = metrics$R2,
-    Cumulative_Return = strategy_metrics$Cumulative_Return,
-    Sharpe_Ratio = strategy_metrics$Sharpe_Ratio,
-    Max_Drawdown = strategy_metrics$Max_Drawdown
+    RMSE = round(metrics$RMSE, 4),
+    MAE = round(metrics$MAE, 4),
+    MAPE = round(metrics$MAPE, 4),
+    R2 = round(metrics$R2, 4),
+    Cumulative_Return = round(strategy_metrics$Cumulative_Return %||% NA, 4),
+    Sharpe_Ratio = round(strategy_metrics$Sharpe_Ratio %||% NA, 4),
+    Max_Drawdown = round(strategy_metrics$Max_Drawdown %||% NA, 4),
+    Directional_Accuracy = round(strategy_metrics$Directional_Accuracy %||% NA, 4)
   )
 
   # Safe file read
   existing_data <- tryCatch({
     read.csv(filepath)
   }, error = function(e) {
-    message("⚠️ File exists but is unreadable or empty. Creating new.")
+    message("ℹ️ Creating new result file or loading failed.")
     data.frame()
   })
 
@@ -75,12 +87,14 @@ append_model_results <- function(model_name, target_var, metrics, strategy_metri
     return(invisible(NULL))
   }
 
+  # Append and save
   updated_data <- if (nrow(existing_data) > 0) {
     rbind(existing_data, new_row)
   } else {
     new_row
   }
 
+  dir.create(dirname(filepath), showWarnings = FALSE, recursive = TRUE)
   write.csv(updated_data, filepath, row.names = FALSE)
   message("✅ Appended: ", model_name, " - ", target_var)
 }
