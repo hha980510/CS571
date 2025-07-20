@@ -1,37 +1,55 @@
-"Model","Target","RMSE","MAE","MAPE","R2","Cumulative_Return","Sharpe_Ratio","Max_Drawdown","Directional_Accuracy"
-"LinearRegression_Technical","Target_5_Price",7.516,5.4391,0.0625,0.971,-0.8936,-2.2444,0.8957,0.4422
-"LinearRegression_Technical","Target_10_Price",9.2409,6.7981,0.0796,0.9558,-0.8814,-2.1761,0.8849,0.4185
-"LinearRegression_Technical","Target_21_Price",12.6306,9.3849,0.1106,0.9159,-0.862,-2.2061,0.867,0.4059
-"LinearRegression_Economic","Target_5_Price",80.159,69.1871,0.7625,-2.3021,0,NA,0,0.3849
-"LinearRegression_Economic","Target_10_Price",80.5227,69.6782,0.767,-2.3597,0,NA,0,0.3413
-"LinearRegression_Economic","Target_21_Price",81.1507,70.5478,0.7725,-2.473,0,NA,0,0.3289
-"LinearRegression_All","Target_5_Price",7.8432,5.7532,0.0666,0.9684,-0.8564,-2.017,0.8592,0.4259
-"LinearRegression_All","Target_10_Price",10.7066,8.0708,0.0949,0.9406,-0.8061,-2.0837,0.8061,0.3935
-"LinearRegression_All","Target_21_Price",16.8258,12.895,0.1508,0.8507,-0.6264,-1.6863,0.6341,0.3542
-"LassoRegression_Technical","Target_5_Price",7.5485,5.4689,0.0629,0.9707,-0.8918,-2.2342,0.894,0.4432
-"LassoRegression_Technical","Target_10_Price",9.2796,6.8318,0.0801,0.9554,-0.8814,-2.1876,0.8849,0.4174
-"LassoRegression_Technical","Target_21_Price",12.6743,9.4125,0.1109,0.9153,-0.862,-2.2309,0.867,0.4048
-"LassoRegression_Economic","Target_5_Price",80.1377,69.1436,0.7614,-2.3004,0,NA,0,0.3849
-"LassoRegression_Economic","Target_10_Price",80.5009,69.6347,0.7659,-2.3579,0,NA,0,0.3413
-"LassoRegression_Economic","Target_21_Price",81.1277,70.5042,0.7715,-2.471,0,NA,0,0.3289
-"LassoRegression_All","Target_5_Price",7.9074,5.8038,0.0671,0.9679,-0.8481,-1.9992,0.8512,0.4314
-"LassoRegression_All","Target_10_Price",10.7453,8.0986,0.0951,0.9402,-0.8076,-2.0969,0.8076,0.3957
-"LassoRegression_All","Target_21_Price",16.8681,12.9285,0.1511,0.8499,-0.6264,-1.7044,0.6341,0.3542
-"RidgeRegression_Technical","Target_5_Price",12.4846,9.7925,0.1103,0.9199,-0.6483,-1.7186,0.6556,0.4065
-"RidgeRegression_Technical","Target_10_Price",14.0836,10.9834,0.1254,0.8972,-0.6483,-1.723,0.6556,0.375
-"RidgeRegression_Technical","Target_21_Price",17.2907,13.2275,0.1533,0.8423,-0.6325,-1.7366,0.6401,0.3553
-"RidgeRegression_Economic","Target_5_Price",79.3359,68.0504,0.7398,-2.2346,0,NA,0,0.3849
-"RidgeRegression_Economic","Target_10_Price",79.7137,68.5688,0.7452,-2.2926,0,NA,0,0.3413
-"RidgeRegression_Economic","Target_21_Price",80.413,69.5383,0.7532,-2.4101,0,NA,0,0.3289
-"RidgeRegression_All","Target_5_Price",29.4147,24.8099,0.2701,0.5554,0,NA,0,0.3849
-"RidgeRegression_All","Target_10_Price",31.4205,26.5738,0.2912,0.4884,0,NA,0,0.3413
-"RidgeRegression_All","Target_21_Price",35.4174,30.1238,0.332,0.3385,0,NA,0,0.3289
-"XGBoost_Technical","Target_5_Price",71.2673,57.0045,0.543,-1.6102,0.2093,0.5213,0.1008,0.4141
-"XGBoost_Technical","Target_10_Price",71.483,57.4474,0.5504,-1.6477,0.1821,0.4393,0.142,0.3826
-"XGBoost_Technical","Target_21_Price",72.0965,58.607,0.5688,-1.7413,0.2452,0.6544,0.075,0.3586
-"XGBoost_Economic","Target_5_Price",80.4737,67.7914,0.711,-2.3281,0,NA,0,0.3849
-"XGBoost_Economic","Target_10_Price",80.4361,67.81,0.7092,-2.3525,-0.0239,-0.6331,0.0328,0.3467
-"XGBoost_Economic","Target_21_Price",80.8549,68.4892,0.7134,-2.4477,0.0168,-0.1421,0.0328,0.3377
-"XGBoost_All","Target_5_Price",74.1164,60.3449,0.5948,-1.823,-0.1013,-0.7117,0.1013,0.3881
-"XGBoost_All","Target_10_Price",74.3889,60.8596,0.6029,-1.8674,-0.0816,-0.5344,0.1013,0.3565
-"XGBoost_All","Target_21_Price",79.7708,67.025,0.6867,-2.3559,0.0168,-0.1421,0.0328,0.3377
+"Timestamp","Model","Target","RMSE","MAE","MAPE","R2","Accuracy","Cumulative_Return","Sharpe_Ratio","Max_Drawdown","Directional_Accuracy"
+"2025-07-20 15:18:43","LinearRegression_Technical","Target_5_Price",7.4061,5.3219,0.0623,0.9706,NA,-0.7596,-0.7633,-0.8822,0.4703
+"2025-07-20 15:18:43","LinearRegression_Technical","Target_10_Price",9.0981,6.672,0.0794,0.9558,NA,-0.6671,-0.6188,-0.8413,0.4438
+"2025-07-20 15:18:44","LinearRegression_Technical","Target_21_Price",12.6306,9.3849,0.1106,0.9159,NA,-0.2193,-0.1731,-0.7606,0.4108
+"2025-07-20 15:18:44","LinearRegression_Economic","Target_5_Price",78.6572,67.9186,0.7608,-2.3141,NA,-0.9998,-2.1994,-0.9998,0.3811
+"2025-07-20 15:18:44","LinearRegression_Economic","Target_10_Price",79.4485,68.7817,0.7658,-2.3719,NA,-0.9983,-1.9582,-0.9983,0.337
+"2025-07-20 15:18:44","LinearRegression_Economic","Target_21_Price",81.1507,70.5478,0.7725,-2.473,NA,-0.9847,-1.5965,-0.9851,0.3238
+"2025-07-20 15:18:44","LinearRegression_All","Target_5_Price",7.7008,5.6158,0.0663,0.9682,NA,-0.9363,-1.2385,-0.9608,0.4581
+"2025-07-20 15:18:44","LinearRegression_All","Target_10_Price",10.4883,7.9002,0.0944,0.9412,NA,-0.9439,-1.276,-0.9594,0.4031
+"2025-07-20 15:18:45","LinearRegression_All","Target_21_Price",16.8258,12.895,0.1508,0.8507,NA,-0.9494,-1.3049,-0.9574,0.3425
+"2025-07-20 15:18:45","LassoRegression_Technical","Target_5_Price",7.4372,5.3507,0.0627,0.9704,NA,-0.7641,-0.7713,-0.8827,0.4703
+"2025-07-20 15:18:46","LassoRegression_Technical","Target_10_Price",9.1345,6.7043,0.0798,0.9554,NA,-0.6525,-0.5987,-0.8159,0.4405
+"2025-07-20 15:18:46","LassoRegression_Technical","Target_21_Price",12.6743,9.4125,0.1109,0.9153,NA,-0.2282,-0.1798,-0.7606,0.4064
+"2025-07-20 15:18:46","LassoRegression_Economic","Target_5_Price",78.6346,67.8741,0.7597,-2.3122,NA,-0.9998,-2.1994,-0.9998,0.3811
+"2025-07-20 15:18:46","LassoRegression_Economic","Target_10_Price",79.4258,68.7375,0.7648,-2.37,NA,-0.9983,-1.9582,-0.9983,0.337
+"2025-07-20 15:18:46","LassoRegression_Economic","Target_21_Price",81.1277,70.5042,0.7715,-2.471,NA,-0.9847,-1.5965,-0.9851,0.3238
+"2025-07-20 15:18:47","LassoRegression_All","Target_5_Price",7.7604,5.6633,0.0668,0.9677,NA,-0.94,-1.2562,-0.9644,0.4526
+"2025-07-20 15:18:47","LassoRegression_All","Target_10_Price",10.5258,7.9273,0.0946,0.9408,NA,-0.9545,-1.3349,-0.9617,0.402
+"2025-07-20 15:18:47","LassoRegression_All","Target_21_Price",16.8681,12.9285,0.1511,0.8499,NA,-0.9453,-1.2828,-0.9539,0.3436
+"2025-07-20 15:18:48","RidgeRegression_Technical","Target_5_Price",12.1256,9.5148,0.1095,0.9212,NA,-0.999,-2.0251,-0.9991,0.4097
+"2025-07-20 15:18:48","RidgeRegression_Technical","Target_10_Price",13.7646,10.7479,0.1247,0.8988,NA,-0.9882,-1.6489,-0.9896,0.37
+"2025-07-20 15:18:48","RidgeRegression_Technical","Target_21_Price",17.2907,13.2275,0.1533,0.8423,NA,-0.9298,-1.2091,-0.9379,0.3469
+"2025-07-20 15:18:48","RidgeRegression_Economic","Target_5_Price",77.8122,66.7668,0.7377,-2.2433,NA,-0.9998,-2.1994,-0.9998,0.3811
+"2025-07-20 15:18:48","RidgeRegression_Economic","Target_10_Price",78.6247,67.6623,0.7438,-2.3023,NA,-0.9983,-1.9582,-0.9983,0.337
+"2025-07-20 15:18:49","RidgeRegression_Economic","Target_21_Price",80.413,69.5383,0.7532,-2.4101,NA,-0.9847,-1.5965,-0.9851,0.3238
+"2025-07-20 15:18:49","RidgeRegression_All","Target_5_Price",28.7205,24.2585,0.2689,0.5581,NA,-0.9998,-2.1994,-0.9998,0.3811
+"2025-07-20 15:18:49","RidgeRegression_All","Target_10_Price",30.8663,26.1463,0.2902,0.4911,NA,-0.9983,-1.9582,-0.9983,0.337
+"2025-07-20 15:18:49","RidgeRegression_All","Target_21_Price",35.4174,30.1238,0.332,0.3385,NA,-0.9847,-1.5965,-0.9851,0.3238
+"2025-07-20 15:18:50","XGBoost_Regression_Technical","Target_5_Price",69.8011,55.881,0.5433,-1.6099,NA,-0.9991,-2.0422,-0.9993,0.413
+"2025-07-20 15:18:50","XGBoost_Regression_Technical","Target_10_Price",70.396,56.5347,0.547,-1.6473,NA,-0.9935,-1.758,-0.9961,0.3822
+"2025-07-20 15:18:51","XGBoost_Regression_Technical","Target_21_Price",71.69,58.2402,0.5646,-1.7104,NA,-0.9572,-1.3513,-0.9753,0.3656
+"2025-07-20 15:18:51","XGBoost_Regression_Economic","Target_5_Price",78.8758,66.4261,0.7071,-2.3326,NA,-0.9998,-2.186,-0.9998,0.3833
+"2025-07-20 15:18:51","XGBoost_Regression_Economic","Target_10_Price",78.1587,65.7593,0.6923,-2.2633,NA,-0.998,-1.9405,-0.9982,0.3458
+"2025-07-20 15:18:51","XGBoost_Regression_Economic","Target_21_Price",79.796,67.5964,0.7053,-2.358,NA,-0.9825,-1.568,-0.9836,0.3326
+"2025-07-20 15:18:52","XGBoost_Regression_All","Target_5_Price",74.3175,60.9762,0.6183,-1.9585,NA,-0.9998,-2.1802,-0.9998,0.3921
+"2025-07-20 15:18:52","XGBoost_Regression_All","Target_10_Price",70.9574,57.5082,0.5693,-1.6897,NA,-0.9971,-1.887,-0.9976,0.3502
+"2025-07-20 15:18:53","XGBoost_Regression_All","Target_21_Price",80.1613,67.448,0.6924,-2.3888,NA,-0.9819,-1.5603,-0.9833,0.3337
+"2025-07-20 15:18:56","XGBoost_Classifier_Tuned_Technical","Target_5_Direction",NA,NA,NA,NA,0.6535,-0.9547,-1.4679,-0.9547,0.6542
+"2025-07-20 15:18:59","XGBoost_Classifier_Tuned_Technical","Target_10_Direction",NA,NA,NA,NA,0.5699,-0.9896,-1.8102,-0.9896,0.5694
+"2025-07-20 15:19:03","XGBoost_Classifier_Tuned_Technical","Target_21_Direction",NA,NA,NA,NA,0.4554,-0.9268,-1.3194,-0.9279,0.4548
+"2025-07-20 15:19:05","XGBoost_Classifier_Tuned_Economic","Target_5_Direction",NA,NA,NA,NA,0.4202,-0.1056,-0.0988,-0.6595,0.4196
+"2025-07-20 15:19:07","XGBoost_Classifier_Tuned_Economic","Target_10_Direction",NA,NA,NA,NA,0.4686,0.3618,0.1965,-0.5481,0.4692
+"2025-07-20 15:19:09","XGBoost_Classifier_Tuned_Economic","Target_21_Direction",NA,NA,NA,NA,0.4763,0.6519,0.318,-0.5334,0.4758
+"2025-07-20 15:19:13","XGBoost_Classifier_Tuned_All","Target_5_Direction",NA,NA,NA,NA,0.6469,-0.9669,-1.6472,-0.9669,0.6465
+"2025-07-20 15:19:18","XGBoost_Classifier_Tuned_All","Target_10_Direction",NA,NA,NA,NA,0.5424,-0.9969,-2.2009,-0.9969,0.543
+"2025-07-20 15:19:22","XGBoost_Classifier_Tuned_All","Target_21_Direction",NA,NA,NA,NA,0.4554,-0.8164,-0.9739,-0.8733,0.4548
+"2025-07-20 15:19:22","XGBoost_Classifier_Technical","Target_5_Direction",NA,NA,NA,NA,0.6447,-0.953,-1.3486,-0.953,0.6443
+"2025-07-20 15:19:22","XGBoost_Classifier_Economic","Target_5_Direction",NA,NA,NA,NA,0.3685,0.2639,0.143,-0.5562,0.3678
+"2025-07-20 15:19:22","XGBoost_Classifier_Tech_Econ","Target_5_Direction",NA,NA,NA,NA,0.648,-0.9818,-1.7123,-0.9822,0.6476
+"2025-07-20 15:19:22","XGBoost_Classifier_Technical","Target_10_Direction",NA,NA,NA,NA,0.5732,-0.9875,-1.7516,-0.9876,0.5727
+"2025-07-20 15:19:23","XGBoost_Classifier_Economic","Target_10_Direction",NA,NA,NA,NA,0.4609,-0.0864,-0.0806,-0.6618,0.4615
+"2025-07-20 15:19:23","XGBoost_Classifier_Tech_Econ","Target_10_Direction",NA,NA,NA,NA,0.5215,-0.9873,-1.7945,-0.9876,0.5209
+"2025-07-20 15:19:23","XGBoost_Classifier_Technical","Target_21_Direction",NA,NA,NA,NA,0.5006,-0.8569,-1.0978,-0.8697,0.5
+"2025-07-20 15:19:23","XGBoost_Classifier_Economic","Target_21_Direction",NA,NA,NA,NA,0.4928,0.4656,0.2313,-0.5527,0.4923
+"2025-07-20 15:19:23","XGBoost_Classifier_Tech_Econ","Target_21_Direction",NA,NA,NA,NA,0.4202,-0.9952,-1.9178,-0.9953,0.4196

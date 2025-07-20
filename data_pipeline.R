@@ -50,7 +50,13 @@ run_xgboost<-TRUE
 if (run_linear)   safe_source("Modeling/06_linear_regression_model.R")
 if (run_lasso)    safe_source("Modeling/07_lasso_regression_model.R")
 if (run_ridge)    safe_source("Modeling/08_ridge_regression_model.R")
-if (run_xgboost)  safe_source("Modeling/09_XGBoots_model.R")
+if (run_xgboost) {
+  safe_source("Modeling/13_xgboost_regressor_model.R")
+  safe_source("Modeling/14_xgboost_classifier_tuning.R")
+  safe_source("Modeling/15_run_all_classifiers.R")
+}
+
+
 #if (run_rf)  safe_source("Modeling/10_rf_model.R")
 #if (run_svr)  safe_source("Modeling/11_svr_model.R")
 #if (run_tunedrf)  safe_source("Modeling/12_tunedrf_model.R")

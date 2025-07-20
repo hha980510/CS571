@@ -1,85 +1,87 @@
 # ============================================
-# File: Modeling/04_strategy_evaluation_utils.R
-# Purpose: Utility functions for evaluating financial strategy performance
+# File: 04_strategy_evaluation_utils.R
+# Purpose: Evaluate trading strategy performance
 # ============================================
 
-# -----------------------------------
-# Safe default operator (used in 03_modeling_utils.R)
-# -----------------------------------
-`%||%` <- function(x, y) if (!is.null(x)) x else y
+library(PerformanceAnalytics)
+library(zoo)
+library(xts)
 
-# ----------------------------
-# Calculate Cumulative Return
-# ----------------------------
-calculate_cumulative_return <- function(returns) {
-  if (anyNA(returns)) warning("ℹ️ NA values detected in returns. Ignoring them.")
-  return(prod(1 + returns, na.rm = TRUE) - 1)
+# --- Max Drawdown Calculation ---
+calculate_max_drawdown <- function(equity_curve) {
+  running_max <- cummax(equity_curve)
+  drawdown <- (equity_curve - running_max) / running_max
+  return(as.numeric(min(drawdown, na.rm = TRUE)))
 }
 
-# ----------------------------
-# Calculate Sharpe Ratio (Annualized)
-# ----------------------------
-calculate_sharpe_ratio <- function(returns, risk_free_rate = 0.01) {
-  if (anyNA(returns)) warning("ℹ️ NA values detected in returns. Ignoring them.")
-  daily_rfr <- risk_free_rate / 252
-  excess_returns <- returns - daily_rfr
-  avg_excess <- mean(excess_returns, na.rm = TRUE)
-  sd_excess <- sd(excess_returns, na.rm = TRUE)
+# --- Strategy Evaluation Function ---
+evaluate_strategy_metrics <- function(predictions,
+                                      actuals,
+                                      current_prices,
+                                      test_dates,
+                                      probabilities = NULL,
+                                      direction_target = FALSE,
+                                      capital_base = 10000,
+                                      rf_rate = 0.01) {
+  tryCatch({
+    current_prices <- as.numeric(current_prices)
+    predictions <- as.numeric(predictions)
+    actuals <- as.numeric(actuals)
+    test_dates <- as.Date(test_dates)
 
-  if (sd_excess == 0 || is.na(sd_excess)) {
-    return(NA)
-  }
+    if (length(test_dates) != length(current_prices)) {
+      stop("Mismatch in test_dates and current_prices lengths.")
+    }
 
-  return(avg_excess / sd_excess * sqrt(252))
-}
+    returns <- diff(log(current_prices))
+    trade_signal <- rep(0, length(returns))
 
-# ----------------------------
-# Calculate Maximum Drawdown
-# ----------------------------
-calculate_max_drawdown <- function(returns) {
-  if (anyNA(returns)) warning("ℹ️ NA values detected in returns. Ignoring them.")
-  curve <- cumprod(1 + returns)
-  peak <- cummax(curve)
-  drawdown <- 1 - (curve / peak)
-  return(max(drawdown, na.rm = TRUE))
-}
+    # --- Trade Signal Generation ---
+    if (direction_target) {
+      if (!is.null(probabilities)) {
+        trade_signal <- ifelse(probabilities[-1] > 0.6, 1,
+                               ifelse(probabilities[-1] < 0.4, -1, 0))
+      } else {
+        trade_signal <- ifelse(predictions[-1] == 1, 1, 0)
+      }
 
-# ----------------------------
-# Calculate RMSE for No-Change Baseline
-# ----------------------------
-calculate_baseline_rmse <- function(actual_prices) {
-  baseline_preds <- c(NA, head(actual_prices, -1))
-  rmse <- sqrt(mean((baseline_preds - actual_prices)^2, na.rm = TRUE))
-  return(rmse)
-}
+      predicted_direction <- predictions[-1]
+      actual_direction <- actuals[-1]
+    } else {
+      predicted_direction <- sign(predictions[-1] - current_prices[-length(current_prices)])
+      actual_direction <- sign(actuals[-1] - current_prices[-length(current_prices)])
+      trade_signal <- ifelse(predicted_direction == actual_direction, 1, -1)
+    }
 
-# ----------------------------
-# Directional Accuracy: Custom for strategy
-# ----------------------------
-calculate_directional_accuracy <- function(predictions, actual_future_prices, current_prices) {
-  predicted_dir <- sign(predictions - current_prices)
-  actual_dir <- sign(actual_future_prices - current_prices)
-  valid <- !is.na(predicted_dir) & !is.na(actual_dir)
+    # --- Strategy Returns ---
+    trade_signal <- head(trade_signal, length(returns))
+    strategy_returns <- returns * trade_signal
+    strategy_returns[is.na(strategy_returns)] <- 0
 
-  if (sum(valid) == 0) return(NA)
-  return(mean(predicted_dir[valid] == actual_dir[valid]))
-}
+    aligned_dates <- test_dates[-1]
+    strategy_xts <- xts(strategy_returns, order.by = aligned_dates)
+    equity_curve <- cumprod(1 + strategy_returns)
+    equity_xts <- xts(equity_curve, order.by = aligned_dates)
 
-# ----------------------------
-# Strategy Evaluation Wrapper
-# ----------------------------
-evaluate_strategy_metrics <- function(predictions, current_prices, actual_future_prices) {
-  # Simulate buy decision
-  position <- ifelse(predictions > current_prices, 1, 0)
+    # --- Performance Metrics ---
+    cumulative_return <- as.numeric(last(equity_xts)) - 1
+    sharpe_ratio <- SharpeRatio.annualized(strategy_xts, Rf = rf_rate / 252, scale = 252, geometric = TRUE)
+    max_drawdown <- calculate_max_drawdown(as.numeric(equity_xts))
+    directional_accuracy <- mean(predicted_direction == actual_direction, na.rm = TRUE)
 
-  # Calculate actual next-day returns
-  raw_returns <- c(0, diff(current_prices) / head(current_prices, -1))
-  strategy_returns <- position * raw_returns
+    return(list(
+      Cumulative_Return = cumulative_return,
+      Sharpe_Ratio = as.numeric(sharpe_ratio),
+      Max_Drawdown = max_drawdown,
+      Directional_Accuracy = directional_accuracy
+    ))
 
-  return(list(
-    Cumulative_Return = calculate_cumulative_return(strategy_returns) %||% NA,
-    Sharpe_Ratio = calculate_sharpe_ratio(strategy_returns) %||% NA,
-    Max_Drawdown = calculate_max_drawdown(strategy_returns) %||% NA,
-    Directional_Accuracy = calculate_directional_accuracy(predictions, actual_future_prices, current_prices) %||% NA
-  ))
+  }, error = function(e) {
+    return(list(
+      Cumulative_Return = 0,
+      Sharpe_Ratio = NA,
+      Max_Drawdown = 0,
+      Directional_Accuracy = NA
+    ))
+  })
 }

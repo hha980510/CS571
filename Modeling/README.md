@@ -108,7 +108,11 @@ To use these functions for evaluating your trading strategy, simply **source the
 ```R
 source("Modeling/04_strategy_evaluation_utils.R")
 ```
-# 📈 Linear Regression Modeling
+
+# 📈 Model Implementations
+This section details the various models implemented for NVIDIA (NVDA) stock price prediction, targeting different time horizons (5, 10, and 21 days ahead). All models are evaluated using the **Regression Metrics** (RMSE, MAE, MAPE, R², Directional Accuracy) and Strategy Metrics (Cumulative Return, Sharpe Ratio, Max Drawdown) as defined in `03_modeling_utils.R` and `04_strategy_evaluation_utils.R`.
+
+**Linear Regression**
 
 This module focuses on building and evaluating **Linear Regression** models for **NVIDIA (NVDA) stock price prediction**. We're targeting different time horizons:
 
