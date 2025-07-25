@@ -9,8 +9,8 @@ library(zoo)
 library(dplyr)
 
 # Load data
-nvda_data <- readRDS("Data_Clean/nvda_data_after_missing_handling.rds")
-macro_data_combined_daily <- readRDS("Data_Clean/macro_data_combined_daily.rds")
+nvda_data <- readRDS("Data/nvda_data_after_missing_handling.rds")
+macro_data_combined_daily <- readRDS("Data/macro_data_combined_daily.rds")
 
 if (!exists("nvda_data")) stop("❌ 'nvda_data' missing. Run handle_missing.R first.")
 if (!exists("macro_data_combined_daily")) stop("❌ 'macro_data_combined_daily' missing. Run handle_missing.R first.")
@@ -53,5 +53,5 @@ if (length(valid_cols) == length(macro_new)) {
 }
 
 # Save output
-saveRDS(nvda_data, file = "Data_Clean/nvda_data_fully_engineered.rds")
+saveRDS(nvda_data, file = "Data/nvda_data_fully_engineered.rds")
 message("✅ Feature engineering complete.")

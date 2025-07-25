@@ -7,7 +7,7 @@ library(dplyr)
 library(readr)
 
 # Load data
-df <- readRDS("Data_Clean/nvda_data_with_targets.rds")
+df <- readRDS("Data/nvda_data_with_targets.rds")
 
 # Feature groups
 technical_features <- c("SMA20", "RSI14", "MACD", "Signal", "log_return", "volatility_20")

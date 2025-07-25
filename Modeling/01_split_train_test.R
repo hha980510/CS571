@@ -9,7 +9,7 @@ library(lubridate)
 cat("📦 Starting train/test split...\n")
 
 # Load data
-df <- readRDS("Data_Clean/nvda_data_with_targets.rds")
+df <- readRDS("Data/nvda_data_with_targets.rds")
 cat("✅ Data loaded. Total rows:", nrow(df), "\n")
 
 # Ensure date format
