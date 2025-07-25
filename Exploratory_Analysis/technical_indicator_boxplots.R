@@ -15,7 +15,7 @@ library(xts)
 if (!dir.exists("Figures")) dir.create("Figures")
 
 # ✅ Load data (must be an xts object)
-nvda_xts <- readRDS("Data/nvda_data_after_missing_handling.rds")
+nvda_data <- readRDS("Data/nvda_data_after_outlier_handling.rds")
 
 # ✅ Compute technical indicators on xts object
 rsi_vals <- RSI(nvda_xts$NVDA.Close, n = 14)

@@ -5,7 +5,7 @@ if (!require(forecast)) install.packages("forecast")
 library(forecast)
 
 # ✅ Load cleaned and engineered data
-nvda_data <- readRDS("Data/nvda_data_after_missing_handling.rds")
+nvda_data <- readRDS("Data/nvda_data_after_outlier_handling.rds")
 
 # ✅ Extract and clean log returns
 nvda_ret <- na.omit(diff(log(nvda_data$NVDA.Close)))

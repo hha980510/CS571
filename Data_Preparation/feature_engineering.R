@@ -9,7 +9,7 @@ library(zoo)
 library(dplyr)
 
 # Load data
-nvda_data <- readRDS("Data/nvda_data_after_missing_handling.rds")
+nvda_data <- readRDS("Data/nvda_data_after_outlier_handling.rds")
 macro_data_combined_daily <- readRDS("Data/macro_data_combined_daily.rds")
 
 if (!exists("nvda_data")) stop("❌ 'nvda_data' missing. Run handle_missing.R first.")

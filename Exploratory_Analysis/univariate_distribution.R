@@ -1,42 +1,54 @@
-# =====================================================
+# ============================================
 # Script: univariate_distribution.R
-# Purpose: Generate summary statistics table for raw NVDA data
-# Output: PNG table saved to Figures/raw_summary_table_pretty.png
-# =====================================================
+# Purpose: Generate summary statistics table for RAW NVDA data.
+# Output: PNG table saved to Figures/raw_data_summary_table.png.
+# ============================================
 
 library(readr)
 library(dplyr)
 library(gridExtra)
 library(ggplot2)
 library(grid)
+library(quantmod)
 
 # Load raw data
-nvda_raw <- readRDS("Data/nvda_data_raw.rds")
+nvda_raw_xts <- readRDS("Data/nvda_data_raw.rds")
+
+# Convert to data.frame
+nvda_raw <- data.frame(Date = index(nvda_raw_xts), coredata(nvda_raw_xts))
 
 # Calculate mean and sd for selected columns
-summary_df <- data.frame(
-  Metric = c("Open_mean", "Open_sd", "Close_mean", "Close_sd", 
+summary_df_raw <- data.frame(
+  Metric = c("Open_mean", "Open_sd", "Close_mean", "Close_sd",
              "Volume_mean", "Volume_sd", "Adjusted_mean", "Adjusted_sd"),
   Value = c(
-    mean(Op(nvda_raw)), sd(Op(nvda_raw)),
-    mean(Cl(nvda_raw)), sd(Cl(nvda_raw)),
-    mean(Vo(nvda_raw)), sd(Vo(nvda_raw)),
-    mean(Ad(nvda_raw)), sd(Ad(nvda_raw))
+    mean(nvda_raw$NVDA.Open, na.rm = TRUE), sd(nvda_raw$NVDA.Open, na.rm = TRUE),
+    mean(nvda_raw$NVDA.Close, na.rm = TRUE), sd(nvda_raw$NVDA.Close, na.rm = TRUE),
+    mean(nvda_raw$NVDA.Volume, na.rm = TRUE), sd(nvda_raw$NVDA.Volume, na.rm = TRUE),
+    mean(nvda_raw$NVDA.Adjusted, na.rm = TRUE), sd(nvda_raw$NVDA.Adjusted, na.rm = TRUE)
   )
 ) %>%
-  mutate(Value = round(Value, 2))  # Round values
+  # Format values for readability
+  mutate(Value = formatC(Value, format = "f", big.mark = ",", digits = 2))
 
-# Create table grob (graphical object)
-table_grob <- tableGrob(summary_df, rows = NULL)
+# Create table grob
+table_grob_raw <- tableGrob(summary_df_raw, rows = NULL,
+                             theme = ttheme_default(
+                               core = list(fg_params = list(fontsize = 10)),
+                               colhead = list(fg_params = list(fontsize = 10)),
+                               rowhead = list(fg_params = list(fontsize = 10))
+                             ))
 
 # Add background color for alternate rows
-table_grob$grobs[which(grepl("background", table_grob$layout$name))] <- 
+table_grob_raw$grobs[which(grepl("background", table_grob_raw$layout$name))] <-
   Map(function(grob, i) {
     rectGrob(gp = gpar(fill = ifelse(i %% 2 == 0, "#f0f0f0", "white"), col = NA))
-  }, table_grob$grobs[which(grepl("background", table_grob$layout$name))], 
-     seq_along(table_grob$grobs[which(grepl("background", table_grob$layout$name))]))
+  }, table_grob_raw$grobs[which(grepl("background", table_grob_raw$layout$name))],
+     seq_along(table_grob_raw$grobs[which(grepl("background", table_grob_raw$layout$name))]))
 
 # Save as PNG
-png("Figures/raw_data_summary_table.png", width = 700, height = 400)
-grid.draw(table_grob)
+png("Figures/raw_data_summary_table.png", width = 800, height = 400, res = 150)
+grid.draw(table_grob_raw)
 dev.off()
+
+message("✅ Raw data summary table generated and saved to Figures/raw_data_summary_table.png.")

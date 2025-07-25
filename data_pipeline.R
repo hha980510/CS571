@@ -18,6 +18,7 @@ safe_source <- function(script_path) {
 # --- Step 1: Data Clean ---
 safe_source("Data_Clean/import_data.R")
 safe_source("Data_Clean/handle_missing.R")
+safe_source("Data_Clean/handle_outliers.R")
 
 # --- Step 2: Data Preparation ---
 safe_source("Data_Preparation/feature_engineering.R")
