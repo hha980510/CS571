@@ -16,15 +16,26 @@ The pipeline is modular and controlled through a single master script: `data_pip
 
 ### 🗂️ Modules Included
 
-- **Data Preparation**
+- **Data Clean**
   - `import_data.R`: Pulls stock and macroeconomic data.
   - `handle_missing.R`: Cleans and fills missing values using time-series forward fill.
-  - `feature_engineering.R`: Builds technical and macro features.
   
-- **Data Wrangling**
+- **Data preparation**
+  - `feature_engineering.R`: Builds technical and macro features.
   - `clean_column_structure.R`: Cleans and aligns column names and structures.
   - `data_quality_checks.R`: Checks consistency, types, NAs, etc.
   - `add_targets.R`: Generates price and direction targets.
+
+- **Exploratory Data Analysis**
+
+ - `univariate_distribution.R`: Plots histograms and density plots of technical indicators (RSI, MACD, Volatility, Volume, Return).
+ - `Time-series_plots.R`: Generates time series plots for key indicators (Close price, RSI, MACD, Volatility).
+ - `Stationarity_Test.R`: Performs ADF and KPSS tests on log returns; saves results and plots.
+ - `ACF_PACF_plots.R`: Plots ACF and PACF of log returns to explore autocorrelation structure.
+ - `Scatter_plots.R`: Shows scatter plots of each feature against target variables to assess linear relationships.
+ - `feature_response_relationship.R`: Visualizes how selected features relate to price or directional targets using smoothed plots.
+ - `technical_indicator_boxplots.R`: Creates boxplots grouped by direction target to compare feature distributions across classes.
+ - `Correlation_Heatmap.R`: Displays a correlation heatmap across all numeric predictors and targets.
 
 - **Modeling Setup**
   - `00_modeling_setup.R`: Defines feature sets, target variables, and output folders.
@@ -33,11 +44,15 @@ The pipeline is modular and controlled through a single master script: `data_pip
   - `04_strategy_evaluation_utils.R`: Trading strategy metrics (returns, Sharpe, drawdown).
 
 - **Models Implemented**
+  - Baseline
   - Linear Regression
   - Lasso Regression
   - Ridge Regression
   - XGBoost Regressor
   - XGBoost Classifier (standard + tuned)
+  - Random Forest
+  - Support Vector Regression (SVR)
+  - Random Forest Tuned
 
 ---
 
