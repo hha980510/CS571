@@ -1,8 +1,18 @@
 # ============================================
+# Author: Hyunsung Ha
 # Script: univariate_distribution.R
-# Purpose: Generate summary statistics table for RAW NVDA data.
-# Output: PNG table saved to Figures/raw_data_summary_table.png.
+# Purpose:
+#   Generate a summary statistics table for raw NVDA stock data,
+#   including mean and standard deviation of Open, Close, Volume,
+#   and Adjusted prices. The output is saved as a styled PNG table.
+#
+# Output:
+#   • Figures/raw_data_summary_table.png — Table of summary statistics
+#
+# Libraries Used: readr, dplyr, gridExtra, ggplot2, grid, quantmod
+# Data Source: nvda_data_raw.rds (raw price data in xts format)
 # ============================================
+
 
 library(readr)
 library(dplyr)
@@ -50,5 +60,6 @@ table_grob_raw$grobs[which(grepl("background", table_grob_raw$layout$name))] <-
 png("Figures/raw_data_summary_table.png", width = 800, height = 400, res = 150)
 grid.draw(table_grob_raw)
 dev.off()
+
 
 message("✅ Raw data summary table generated and saved to Figures/raw_data_summary_table.png.")
