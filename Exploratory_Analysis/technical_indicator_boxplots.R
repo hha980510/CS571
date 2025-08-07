@@ -1,8 +1,26 @@
 # =============================================
+# Author: Hyunsung Ha
 # Script: technical_indicator_boxplots.R
-# Purpose: Boxplots of raw and log-scaled features
-# Output: Saved plots in Figures/
+# Purpose:
+#   Generate boxplots of key technical indicators for NVDA,
+#   including raw and log(1+x)-scaled values, to visualize
+#   distribution characteristics and potential outliers.
+#
+# Indicators:
+#   • RSI (14-day)
+#   • MACD
+#   • 20-day Rolling Volatility
+#   • Log Returns
+#   • Volume
+#
+# Output:
+#   • Figures/boxplot_raw_indicators.png — Boxplots of raw values
+#   • Figures/boxplot_log_indicators.png — Boxplots of log-scaled values
+#
+# Libraries Used: quantmod, TTR, ggplot2, dplyr, tidyr, xts
+# Data Source: nvda_data_after_outlier_handling.rds
 # =============================================
+
 
 library(quantmod)
 library(TTR)
@@ -11,26 +29,26 @@ library(dplyr)
 library(tidyr)
 library(xts)
 
-# 📁 Ensure Figures folder exists
+# Ensure Figures folder exists
 if (!dir.exists("Figures")) dir.create("Figures")
 
-# ✅ Load data (must be an xts object)
+# Load data (must be an xts object)
 nvda_data <- readRDS("Data/nvda_data_after_outlier_handling.rds")
 
-# ✅ Compute technical indicators on xts object
+# Compute technical indicators on xts object
 rsi_vals <- RSI(nvda_xts$NVDA.Close, n = 14)
 macd_vals <- MACD(nvda_xts$NVDA.Close)
 vol_vals <- runSD(nvda_xts$NVDA.Close, n = 20)
 ret_vals <- dailyReturn(nvda_xts$NVDA.Close, type = "log")
 
-# ✅ Combine all indicators into a single xts object
+# Combine all indicators into a single xts object
 indicators_xts <- merge(rsi_vals, macd_vals[, "macd"], vol_vals, ret_vals, nvda_xts$NVDA.Volume)
 colnames(indicators_xts) <- c("RSI", "MACD", "Volatility", "Return", "Volume")
 
-# ✅ Convert to data.frame for ggplot
+# Convert to data.frame for ggplot
 df <- na.omit(data.frame(Date = index(indicators_xts), coredata(indicators_xts)))
 
-# ✅ Raw boxplot
+# Raw boxplot
 box_df <- df %>%
   pivot_longer(cols = -Date, names_to = "Feature", values_to = "Value")
 
@@ -42,7 +60,7 @@ raw_plot <- ggplot(box_df, aes(x = Feature, y = Value, fill = Feature)) +
 
 ggsave("Figures/boxplot_raw_indicators.png", raw_plot, width = 8, height = 6)
 
-# ✅ Log-scaled boxplot (handle negatives safely)
+# Log-scaled boxplot (handle negatives safely)
 log_df <- df %>%
   mutate(across(-Date, ~ log1p(pmax(.x, -0.999)))) %>%
   pivot_longer(cols = -Date, names_to = "Feature", values_to = "Log_Value")
@@ -54,5 +72,6 @@ log_plot <- ggplot(log_df, aes(x = Feature, y = Log_Value, fill = Feature)) +
   theme(legend.position = "none")
 
 ggsave("Figures/boxplot_log_indicators.png", log_plot, width = 8, height = 6)
+
 
 message("✅ Boxplots saved to Figures/")
