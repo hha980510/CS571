@@ -1,13 +1,21 @@
-# 📦 필요한 패키지
+# ------------------------------------------------------------
+# Author: Hyunsung Ha
+# Description:
+#   This R script computes and plots the ACF and PACF of NVIDIA
+#   log returns after preprocessing. The results are saved as PNGs.
+#
+# Libraries Used: quantmod, ggplot2, forecast
+# Data Source: 'nvda_data_after_outlier_handling.rds' (pre-cleaned dataset)
+# ------------------------------------------------------------
 library(quantmod)
 library(ggplot2)
 if (!require(forecast)) install.packages("forecast")
 library(forecast)
 
-# ✅ Load cleaned and engineered data
+# Load cleaned and engineered data
 nvda_data <- readRDS("Data/nvda_data_after_outlier_handling.rds")
 
-# ✅ Extract and clean log returns
+# Extract and clean log returns
 nvda_ret <- na.omit(diff(log(nvda_data$NVDA.Close)))
 
 # ACF,B
@@ -39,3 +47,4 @@ pacf_plot <- ggPacf(as.numeric(nvda_ret)) +
 
 ggsave("Figures/acf_nvda_log_returns.png", acf_plot, width = 7, height = 5)
 ggsave("Figures/pacf_nvda_log_returns.png", pacf_plot, width = 7, height = 5)
+
